@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#16181c" />
+<title>Apex Training</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0f1115; --bg2:#16181c; --card:#1c1f25; --card2:#22262d;
+    --line:#2b2f37; --line2:#363b44;
+    --text:#e9ecf1; --text2:#9aa3b0; --text3:#6b7480;
+    --red:#E24B4A; --green:#3FB984; --amber:#E0982E;
+    --radius:14px; --radius-sm:9px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
+  body{padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 20px);max-width:560px;margin:0 auto;}
+  .pad{padding:0 14px;}
+
+  /* Header */
+  .hdr{padding:16px 14px 10px;}
+  .hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:23px;font-weight:900;text-transform:uppercase;letter-spacing:0.4px;line-height:1.1;}
+  .hdr p{font-size:12px;color:var(--text2);margin-top:3px;}
+
+  /* Sync status pill */
+  .sync{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;margin-top:8px;border:0.5px solid var(--line2);}
+  .sync .dot{width:7px;height:7px;border-radius:50%;}
+  .sync.ok{color:var(--green);} .sync.ok .dot{background:var(--green);}
+  .sync.syncing{color:var(--amber);} .sync.syncing .dot{background:var(--amber);animation:pulse 1s infinite;}
+  .sync.err{color:var(--red);} .sync.err .dot{background:var(--red);}
+  .sync.offline{color:var(--text3);} .sync.offline .dot{background:var(--text3);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  /* Week strip */
+  .week-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;position:sticky;top:0;background:var(--bg);z-index:20;border-bottom:0.5px solid var(--line);}
+  .week-btn{width:34px;height:34px;border-radius:50%;border:0.5px solid var(--line2);background:var(--card);color:var(--text);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .week-btn:active{background:var(--card2);}
+  .week-btn:disabled{opacity:0.3;}
+  .week-info{flex:1;text-align:center;}
+  .week-info .wk{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;}
+  .week-info .blk{font-size:11px;color:var(--text2);margin-top:1px;}
+
+  /* Block meta */
+  .block-meta{margin:12px 14px;background:var(--bg2);border:0.5px solid var(--line);border-radius:var(--radius);padding:13px 14px;}
+  .block-meta .bt{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;}
+  .block-meta .bd{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.5;}
+  .tags{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
+  .tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:0.3px;}
+  .tag.vol{background:rgba(63,140,233,0.15);color:#6ba8e8;}
+  .tag.int{background:rgba(224,152,46,0.15);color:#e0982e;}
+  .tag.peak{background:rgba(226,75,74,0.15);color:#e8706f;}
+  .tag.wk{background:var(--card2);color:var(--text2);}
+
+  /* Day cards */
+  .days{padding:0 14px;display:flex;flex-direction:column;gap:9px;}
+  .day{background:var(--bg2);border:0.5px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .day-hd{display:flex;align-items:center;gap:9px;padding:12px 13px;cursor:pointer;flex-wrap:wrap;}
+  .day-hd:active{background:var(--card);}
+  .badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.3px;padding:3px 8px;border-radius:var(--radius-sm);text-transform:uppercase;white-space:nowrap;}
+  .b-push{background:rgba(63,140,233,0.16);color:#6ba8e8;}
+  .b-pull{background:rgba(139,122,232,0.16);color:#a99cf0;}
+  .b-run{background:rgba(226,75,74,0.16);color:#e8706f;}
+  .b-legs{background:rgba(224,152,46,0.16);color:#e0982e;}
+  .b-rest{background:var(--card2);color:var(--text2);}
+  .day-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}
+  .day-sub{font-size:11px;color:var(--text2);width:100%;line-height:1.3;}
+  .chev{margin-left:auto;color:var(--text3);font-size:11px;transition:transform .2s;}
+  .chev.open{transform:rotate(180deg);}
+
+  .day-body{border-top:0.5px solid var(--line);padding:12px 13px;}
+  .warm{font-size:11px;color:var(--text2);background:var(--card);border-radius:var(--radius-sm);padding:7px 9px;margin-bottom:11px;border-left:2px solid var(--line2);line-height:1.4;}
+  .warm b{color:var(--text);}
+
+  /* Exercise cards */
+  .ex{background:var(--card);border:0.5px solid var(--line);border-radius:var(--radius-sm);padding:10px 11px;margin-bottom:8px;}
+  .ex-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .ex-name{font-weight:600;font-size:13px;line-height:1.3;}
+  .ex-sets{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--red);font-size:14px;white-space:nowrap;}
+  .ex-meta{display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap;}
+  .rpe{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(224,152,46,0.16);color:#e0982e;white-space:nowrap;}
+  .pill{font-size:9px;padding:1px 6px;border-radius:99px;font-weight:600;}
+  .m-tri,.m-chest,.m-bi{background:rgba(63,140,233,0.14);color:#6ba8e8;}
+  .m-sh{background:rgba(224,152,46,0.14);color:#e0982e;}
+  .m-back{background:rgba(63,185,132,0.14);color:#4cc795;}
+  .m-quad{background:rgba(226,75,74,0.14);color:#e8706f;}
+  .m-ham{background:rgba(139,122,232,0.14);color:#a99cf0;}
+  .m-glute{background:rgba(63,185,132,0.14);color:#4cc795;}
+  .m-core{background:var(--card2);color:var(--text2);}
+  .ex-note{font-size:11px;color:var(--text2);margin-top:6px;line-height:1.4;}
+
+  /* Logging */
+  .log-trig{margin-top:9px;padding-top:9px;border-top:0.5px dashed var(--line2);cursor:pointer;}
+  .chip{display:inline-block;font-size:11px;font-weight:600;padding:5px 10px;border-radius:99px;}
+  .chip.empty{color:var(--text2);border:0.5px dashed var(--line2);}
+  .chip.filled{background:rgba(63,185,132,0.15);color:#4cc795;}
+
+  .panel{margin-top:10px;padding-top:10px;border-top:0.5px dashed var(--line2);}
+  .hist{background:var(--card2);border-radius:var(--radius-sm);padding:9px 10px;margin-bottom:10px;}
+  .hist-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text3);margin-bottom:6px;}
+  .hrow{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:6px;padding:5px 0;border-bottom:0.5px solid var(--line);}
+  .hist .hb:last-child .hrow{border-bottom:none;}
+  .hrow .w{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;}
+  .hrow .v{font-size:12px;font-weight:600;}
+  .hrow .last{font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(224,152,46,0.18);color:#e0982e;padding:2px 6px;border-radius:99px;}
+  .hnote{font-size:11px;color:var(--text2);font-style:italic;padding:2px 0 5px;line-height:1.4;border-bottom:0.5px solid var(--line);}
+  .hb:last-child .hnote{border-bottom:none;}
+
+  .entry-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--red);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;}
+  .editor{display:flex;gap:6px;align-items:center;}
+  .inp{flex:1;min-width:0;font-size:14px;padding:9px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;}
+  .inp:focus{outline:none;border-color:var(--red);}
+  .save{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;padding:9px 16px;border-radius:var(--radius-sm);border:none;background:var(--red);color:#fff;cursor:pointer;white-space:nowrap;}
+  .save:active{opacity:0.8;}
+  .save:disabled{opacity:0.5;}
+  .cancel{width:32px;height:32px;flex-shrink:0;border-radius:50%;border:0.5px solid var(--line2);background:var(--card);color:var(--text2);font-size:14px;cursor:pointer;}
+  .note-inp{width:100%;margin-top:8px;font-size:13px;font-family:inherit;padding:9px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--line2);background:var(--card);color:var(--text);resize:none;line-height:1.4;}
+  .note-inp:focus{outline:none;border-color:var(--red);}
+
+  .po{margin-top:11px;background:var(--card);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:var(--text2);border-left:2px solid var(--red);line-height:1.45;}
+  .po b{color:var(--text);}
+  .rest-txt{font-size:12px;color:var(--text2);line-height:1.6;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+  .ic{background:var(--card);border:0.5px solid var(--line);border-radius:var(--radius-sm);padding:9px 10px;}
+  .ic .l{font-size:9px;text-transform:uppercase;letter-spacing:0.3px;color:var(--text3);}
+  .ic .v{font-size:12px;font-weight:500;margin-top:2px;line-height:1.4;}
+
+  /* Setup screen */
+  .setup{padding:30px 18px;}
+  .setup h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px;}
+  .setup p{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:16px;}
+  .setup label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:var(--text3);display:block;margin-bottom:5px;margin-top:14px;}
+  .setup input{width:100%;font-size:14px;padding:11px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;}
+  .setup input:focus{outline:none;border-color:var(--red);}
+  .setup button{width:100%;margin-top:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--red);color:#fff;cursor:pointer;}
+  .setup .err{color:var(--red);font-size:12px;margin-top:10px;}
+  .setup .gear{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:14px;}
+
+  .settings-btn{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;}
+  .disc{font-size:10px;color:var(--text3);padding:18px 14px 8px;line-height:1.5;border-top:0.5px solid var(--line);margin-top:18px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ============================================================
+   PROGRAM DATA
+   ============================================================ */
+const MUSCLE = {
+  tri:["m-tri","Triceps"], sh:["m-sh","Shoulders"], back:["m-back","Back"],
+  bi:["m-bi","Biceps"], chest:["m-chest","Chest"], quad:["m-quad","Quads"],
+  ham:["m-ham","Hams"], core:["m-core","Core"], glute:["m-glute","Glutes"],
+};
+
+const BLOCKS = [
+{
+  name:"Block 1", subtitle:"Accumulation", weeks:"Weeks 1–4", tag:"vol", tagLabel:"Volume Phase",
+  desc:"High volume hypertrophy — 4×10–12, moderate load (65–75% 1RM). Foundation of the bulk: max stimulus across chest, back, shoulders, arms. Legs secondary. Runs easy.",
+  po:"Add 5–10 lb per week on main lifts OR 1–2 reps per set. If all reps clean with 2 in the tank, load goes up next week. Eat in a surplus.",
+  s:{
+    pushA:{t:"Push A — Chest, Shoulders & Triceps",c:"Warm-up: 5 min light cardio + band pull-aparts",e:[
+      {x:"Flat Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Main chest mass builder. Add weight weekly.",m:["chest","tri"]},
+      {x:"Incline DB Press",s:"4×10",r:"RPE 6–7",n:"Upper chest — full stretch at bottom",m:["chest","sh"]},
+      {x:"Seated DB Shoulder Press",s:"4×10",r:"RPE 6–7",n:"Full ROM overhead; control the negative",m:["sh","tri"]},
+      {x:"Lateral Raises",s:"4×15",r:"RPE 7–8",n:"Side delt volume — where shoulder width comes from",m:["sh"]},
+      {x:"Skull Crushers (EZ-bar)",s:"3×12",r:"RPE 7–8",n:"Tricep mass — control the eccentric",m:["tri"]},
+      {x:"Tricep Pushdowns (rope)",s:"3×15",r:"RPE 7–8",n:"Squeeze hard at bottom",m:["tri"]},
+      {x:"Face Pulls (cable)",s:"3×15",r:"RPE 7",n:"Rear delt + shoulder health — every push session",m:["sh","back"]},
+    ]},
+    pullA:{t:"Pull A — Back & Biceps",c:"Warm-up: 5 min row + scapular pull-ups",e:[
+      {x:"Barbell Row (pronated)",s:"4×10",r:"RPE 6–7",n:"Primary back mass builder — heavy, controlled",m:["back"]},
+      {x:"Weighted Pull-Ups",s:"4×8",r:"RPE 6–7",n:"Add weight via belt; wide grip",m:["back","bi"]},
+      {x:"Seated Cable Row",s:"4×12",r:"RPE 7",n:"Mid-back thickness; pause at peak",m:["back"]},
+      {x:"Lat Pulldown (underhand)",s:"3×12",r:"RPE 7",n:"Lower lat + bicep involvement",m:["back","bi"]},
+      {x:"Barbell Curl",s:"4×12",r:"RPE 7–8",n:"Main bicep mass builder — strict",m:["bi"]},
+      {x:"Hammer Curl",s:"3×12",r:"RPE 7–8",n:"Brachialis — arm thickness",m:["bi"]},
+      {x:"Face Pulls (cable)",s:"3×15",r:"RPE 7",n:"Shoulder health — every session",m:["sh","back"]},
+    ]},
+    pushB:{t:"Push B — Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio + band work",e:[
+      {x:"Incline Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Upper chest — different angle than Push A",m:["chest","sh"]},
+      {x:"Flat DB Press",s:"3×12",r:"RPE 7",n:"Greater stretch than barbell",m:["chest","tri"]},
+      {x:"Arnold Press",s:"4×10",r:"RPE 6–7",n:"Rotation hits all 3 delt heads",m:["sh"]},
+      {x:"Cable Lateral Raises",s:"3×15",r:"RPE 7–8",n:"Constant tension — different stimulus than DB",m:["sh"]},
+      {x:"Close-Grip Bench Press",s:"3×10",r:"RPE 6–7",n:"Tricep-dominant pressing for arm mass",m:["tri","chest"]},
+      {x:"Overhead Tricep Extension (cable)",s:"3×12",r:"RPE 7–8",n:"Long head — biggest tricep mass driver",m:["tri"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
+    ]},
+    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min rowing or bike",e:[
+      {x:"Deadlift",s:"3×6",r:"RPE 6–7",n:"Total back + posterior chain — moderate, not max",m:["back","ham","glute"]},
+      {x:"T-Bar Row",s:"4×10",r:"RPE 7",n:"Back thickness",m:["back"]},
+      {x:"Single-Arm DB Row",s:"3×10 each",r:"RPE 7",n:"Unilateral back — full stretch",m:["back"]},
+      {x:"Incline DB Curl",s:"3×12",r:"RPE 7–8",n:"Extra stretch on biceps — great for mass",m:["bi"]},
+      {x:"Cable Curl",s:"3×12",r:"RPE 7–8",n:"Constant tension finisher",m:["bi"]},
+    ]},
+    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Cardio health + light leg conditioning. Not performance-focused.",n:"Keep these easy. Don't burn into the surplus you need for growth. Walk part of it if run-down."},
+    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
+      {x:"Leg Press",s:"3×12",r:"RPE 5–6",n:"Secondary leg volume — moderate, not max",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
+      {x:"Romanian Deadlift",s:"2×12",r:"RPE 5",n:"Light — hamstring health",m:["ham","glute"]},
+    ],n:"Short and light — maintenance right after your easy run. Keep brief so it doesn't eat into recovery."},
+    legDay:{t:"Legs — Quads & Hamstrings",c:"Warmed up from the morning run — light dynamic stretching before loading",e:[
+      {x:"Barbell Back Squat",s:"4×10",r:"RPE 6–7",n:"Main quad+ham driver. Beltless for bracing.",m:["quad","ham"]},
+      {x:"Romanian Deadlift",s:"4×10",r:"RPE 6–7",n:"Slow negative — full hamstring stretch",m:["ham","glute"]},
+      {x:"Leg Press",s:"3×12",r:"RPE 6–7",n:"High foot placement — quad + glute",m:["quad","glute"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 7",n:"Pause at top, control negative",m:["ham"]},
+      {x:"Bulgarian Split Squat",s:"3×10 each",r:"RPE 6–7",n:"DBs in hand; quad-dominant lean",m:["quad","ham"]},
+      {x:"Leg Extension",s:"3×15",r:"RPE 7–8",n:"Isolation finisher — squeeze at top",m:["quad"]},
+      {x:"Standing Calf Raises",s:"3×15",r:"RPE 7",n:"Full ROM, pause at stretch",m:["core"]},
+    ],n:"A few hours after your morning run — legs get a mostly fresh effort. Your one real dedicated leg session each week."},
+  }
+},
+{
+  name:"Block 2", subtitle:"Intensification", weeks:"Weeks 5–8", tag:"int", tagLabel:"Strength + Size",
+  desc:"Lower reps (6–10), higher load (75–85% 1RM) on compounds; accessories stay high-volume. Mass and strength both climb. Legs secondary with added load.",
+  po:"Add 5–10 lb per week on compounds. Accessories: add 1 rep before adding weight. If not recovering, you need more food/sleep — not less training.",
+  s:{
+    pushA:{t:"Push A — Heavy Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets on bench",e:[
+      {x:"Flat Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"75–82% 1RM — heavier than Block 1",m:["chest","tri"]},
+      {x:"Incline DB Press",s:"4×8",r:"RPE 7–8",n:"Push the weight up from Block 1",m:["chest","sh"]},
+      {x:"Seated DB Shoulder Press",s:"4×8",r:"RPE 7–8",n:"Heavier; controlled tempo",m:["sh","tri"]},
+      {x:"Lateral Raises",s:"4×15",r:"RPE 8",n:"Stay high-rep — hypertrophy isolation",m:["sh"]},
+      {x:"Weighted Dips",s:"3×10",r:"RPE 7–8",n:"Add weight via belt — tricep + chest",m:["tri","chest"]},
+      {x:"Overhead Tricep Extension",s:"3×12",r:"RPE 8",n:"Long head volume — non-negotiable",m:["tri"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health every session",m:["sh","back"]},
+    ]},
+    pullA:{t:"Pull A — Heavy Back & Biceps",c:"Warm-up: 5 min row + scap pulls",e:[
+      {x:"Barbell Row",s:"5×6",r:"RPE 7–8",n:"Heavier than Block 1 — primary driver",m:["back"]},
+      {x:"Weighted Pull-Ups",s:"4×6",r:"RPE 7–8",n:"Add 10–15 lb from Block 1",m:["back","bi"]},
+      {x:"Pendlay Row",s:"3×8",r:"RPE 7–8",n:"Dead-stop, explosive — back power and thickness",m:["back"]},
+      {x:"Lat Pulldown",s:"3×10",r:"RPE 7–8",n:"Heavier; controlled negative",m:["back","bi"]},
+      {x:"Barbell Curl",s:"4×10",r:"RPE 8",n:"Heavier than Block 1",m:["bi"]},
+      {x:"Hammer Curl",s:"3×10",r:"RPE 8",n:"Arm thickness continues",m:["bi"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health",m:["sh","back"]},
+    ]},
+    pushB:{t:"Push B — Heavy Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
+      {x:"Incline Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"Heavier — upper chest strength",m:["chest","sh"]},
+      {x:"Flat DB Press",s:"4×8",r:"RPE 7–8",n:"Heavier; full stretch",m:["chest","tri"]},
+      {x:"Arnold Press",s:"4×8",r:"RPE 7–8",n:"Heavier than Block 1",m:["sh"]},
+      {x:"Close-Grip Bench Press",s:"4×8",r:"RPE 7–8",n:"Tricep-dominant — real pressing strength",m:["tri","chest"]},
+      {x:"JM Press",s:"3×8",r:"RPE 8",n:"Powerlifter's lockout move — tricep mass + strength",m:["tri"]},
+      {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8",n:"High rep for delt hypertrophy",m:["sh"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
+    ]},
+    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min row",e:[
+      {x:"Deadlift",s:"4×5",r:"RPE 7–8",n:"Heavier than Block 1 — real strength driver",m:["back","ham","glute"]},
+      {x:"T-Bar Row",s:"4×8",r:"RPE 7–8",n:"Heavier; back thickness",m:["back"]},
+      {x:"Single-Arm DB Row",s:"3×8 each",r:"RPE 7–8",n:"Heavier than Block 1",m:["back"]},
+      {x:"Incline DB Curl",s:"3×10",r:"RPE 8",n:"Stretch position bicep work",m:["bi"]},
+      {x:"Cable Curl",s:"3×12",r:"RPE 8",n:"Finisher — keep pump high",m:["bi"]},
+    ]},
+    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Cardio maintenance. Keep easy — lifting is heavier and needs recovery.",n:"If lifts stall, trim run intensity (don't skip) before cutting calories. Recovery capacity is finite."},
+    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
+      {x:"Leg Press",s:"3×10",r:"RPE 5–6",n:"Slightly heavier than Block 1",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×10",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
+      {x:"Romanian Deadlift",s:"3×10",r:"RPE 5–6",n:"More volume than Block 1 — still secondary",m:["ham","glute"]},
+    ],n:"Short and light — maintenance right after your run. Keep brief."},
+    legDay:{t:"Legs — Heavier Quads & Hamstrings",c:"Warmed up from the run — a couple light squat warm-up sets before heavy",e:[
+      {x:"Barbell Back Squat",s:"5×6",r:"RPE 7–8",n:"75–80% 1RM — heavier; belt allowed",m:["quad","ham"]},
+      {x:"Romanian Deadlift",s:"4×8",r:"RPE 7–8",n:"Heavier; hamstring overload",m:["ham","glute"]},
+      {x:"Front Squat",s:"3×8",r:"RPE 7",n:"Added this block — upper back + quad",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×10",r:"RPE 7–8",n:"Heavier than Block 1",m:["ham"]},
+      {x:"Bulgarian Split Squat",s:"3×8 each",r:"RPE 7–8",n:"Heavier DBs",m:["quad","ham"]},
+      {x:"Leg Extension",s:"3×15",r:"RPE 8",n:"Isolation finisher",m:["quad"]},
+      {x:"Standing Calf Raises",s:"3×15",r:"RPE 7",n:"Weighted if possible",m:["core"]},
+    ],n:"Same timing as Block 1. Load is climbing — real strength work now."},
+  }
+},
+{
+  name:"Block 3", subtitle:"Peak Volume", weeks:"Weeks 9–12", tag:"peak", tagLabel:"Mass Phase",
+  desc:"Total weekly volume at its highest — more sets across push and pull, intensity high on big compounds. This is where the bulk shows. Deload week 9 precedes it.",
+  po:"Continue 5–10 lb/week on compounds while it holds. Stall 2 sessions? Hold the weight, add a rep, then push again.",
+  s:{
+    pushA:{t:"Push A — Max Volume Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets",e:[
+      {x:"Flat Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest at this rep range so far",m:["chest","tri"]},
+      {x:"Incline DB Press",s:"4×10",r:"RPE 8",n:"High volume — chest priority",m:["chest","sh"]},
+      {x:"Cable Chest Fly",s:"3×15",r:"RPE 8–9",n:"Added isolation for total chest volume",m:["chest"]},
+      {x:"Seated DB Shoulder Press",s:"4×10",r:"RPE 8",n:"Volume high for delt growth",m:["sh","tri"]},
+      {x:"Lateral Raises",s:"4×15",r:"RPE 8–9",n:"Still the #1 driver of shoulder width",m:["sh"]},
+      {x:"Skull Crushers",s:"4×12",r:"RPE 8",n:"Increased volume from earlier blocks",m:["tri"]},
+      {x:"Tricep Pushdowns",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["tri"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health — non-negotiable",m:["sh","back"]},
+    ]},
+    pullA:{t:"Pull A — Max Volume Back & Biceps",c:"Warm-up: 5 min row",e:[
+      {x:"Barbell Row",s:"5×8",r:"RPE 8",n:"High volume back mass",m:["back"]},
+      {x:"Weighted Pull-Ups",s:"4×8",r:"RPE 8",n:"Volume up from Block 2",m:["back","bi"]},
+      {x:"Seated Cable Row",s:"4×12",r:"RPE 8",n:"Added set for total back volume",m:["back"]},
+      {x:"Lat Pulldown",s:"3×12",r:"RPE 8",n:"Width work",m:["back","bi"]},
+      {x:"Barbell Curl",s:"4×12",r:"RPE 8–9",n:"High volume arm mass",m:["bi"]},
+      {x:"Hammer Curl",s:"3×12",r:"RPE 8–9",n:"Arm thickness focus",m:["bi"]},
+      {x:"Incline DB Curl",s:"3×12",r:"RPE 8–9",n:"Added for total bicep volume",m:["bi"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health",m:["sh","back"]},
+    ]},
+    pushB:{t:"Push B — Max Volume Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
+      {x:"Incline Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest of program at this rep range",m:["chest","sh"]},
+      {x:"Flat DB Press",s:"4×10",r:"RPE 8",n:"High volume continues",m:["chest","tri"]},
+      {x:"Arnold Press",s:"4×10",r:"RPE 8",n:"Full shoulder volume",m:["sh"]},
+      {x:"Close-Grip Bench Press",s:"4×8",r:"RPE 8",n:"Tricep-dominant strength + mass",m:["tri","chest"]},
+      {x:"JM Press",s:"3×10",r:"RPE 8–9",n:"Volume increased from Block 2",m:["tri"]},
+      {x:"Overhead Tricep Extension",s:"3×12",r:"RPE 8–9",n:"Long head — every push session",m:["tri"]},
+      {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8–9",n:"Delt finisher — last set can touch failure",m:["sh"]},
+      {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
+    ]},
+    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min row",e:[
+      {x:"Deadlift",s:"4×6",r:"RPE 8",n:"Heaviest deadlift volume of the program",m:["back","ham","glute"]},
+      {x:"T-Bar Row",s:"4×10",r:"RPE 8",n:"High volume back thickness",m:["back"]},
+      {x:"Single-Arm DB Row",s:"3×10 each",r:"RPE 8",n:"Continued unilateral volume",m:["back"]},
+      {x:"Incline DB Curl",s:"3×12",r:"RPE 8–9",n:"Stretch-position bicep work",m:["bi"]},
+      {x:"Cable Curl",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["bi"]},
+    ]},
+    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Maintain cardio base through the highest-volume block.",n:"Peak volume — if fried, drop one run to 2 miles or walk it. Don't sacrifice lifting recovery."},
+    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
+      {x:"Leg Press",s:"3×12",r:"RPE 5–6",n:"Maintained secondary leg volume",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
+      {x:"Romanian Deadlift",s:"3×10",r:"RPE 5–6",n:"Posterior chain health",m:["ham","glute"]},
+      {x:"Walking Lunges",s:"2×12 each",r:"RPE 5–6",n:"Functional leg volume",m:["quad","glute"]},
+    ],n:"Short and light. Total leg volume highest this block between this and Sunday — keep this one brief."},
+    legDay:{t:"Legs — Peak Volume Quads & Hamstrings",c:"Warmed up from the run — a couple light squat warm-up sets",e:[
+      {x:"Barbell Back Squat",s:"5×8",r:"RPE 8",n:"Highest volume at this weight range",m:["quad","ham"]},
+      {x:"Romanian Deadlift",s:"4×10",r:"RPE 8",n:"Peak hamstring volume",m:["ham","glute"]},
+      {x:"Front Squat",s:"3×8",r:"RPE 7–8",n:"Maintained from Block 2",m:["quad"]},
+      {x:"Leg Press",s:"3×12",r:"RPE 7–8",n:"Added for total quad volume",m:["quad","glute"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 8",n:"Peak hamstring isolation",m:["ham"]},
+      {x:"Walking Lunges",s:"2×12 each",r:"RPE 7–8",n:"Functional leg volume",m:["quad","glute"]},
+      {x:"Leg Extension",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["quad"]},
+      {x:"Standing Calf Raises",s:"3×15",r:"RPE 8",n:"Weighted, full ROM",m:["core"]},
+    ],n:"Highest leg volume of the 12 weeks. Trim a set or two here before cutting upper work if run down."},
+  }
+}
+];
+
+const DAYS = [
+  {k:"pushA", d:"Monday",      b:"b-push", l:"Push A"},
+  {k:"pullA", d:"Tuesday",     b:"b-pull", l:"Pull A"},
+  {k:"run",   d:"Wednesday",   b:"b-run",  l:"Run"},
+  {k:"wedLegs",d:"Wed · after",b:"b-legs", l:"Legs"},
+  {k:"rest",  d:"Thursday",    b:"b-rest", l:"Rest"},
+  {k:"pushB", d:"Friday",      b:"b-push", l:"Push B"},
+  {k:"pullB", d:"Saturday",    b:"b-pull", l:"Pull B"},
+  {k:"run2",  d:"Sunday · AM", b:"b-run",  l:"Run"},
+  {k:"legDay",d:"Sunday · PM", b:"b-legs", l:"Legs"},
+];
+
+const TOTAL_WEEKS = 12;
+const weekToBlock = (w) => Math.min(2, Math.floor((w - 1) / 4));
+
+/* ============================================================
+   STORAGE LAYER — Turso via Worker, with localStorage cache
+   ============================================================ */
+const LS_CFG = "apex_cfg";
+const LS_CACHE = "apex_logs_cache";
+const LS_QUEUE = "apex_pending";
+
+function getCfg(){ try { return JSON.parse(localStorage.getItem(LS_CFG)) || null; } catch { return null; } }
+function setCfg(c){ localStorage.setItem(LS_CFG, JSON.stringify(c)); }
+function getCache(){ try { return JSON.parse(localStorage.getItem(LS_CACHE)) || {}; } catch { return {}; } }
+function setCache(o){ localStorage.setItem(LS_CACHE, JSON.stringify(o)); }
+function getQueue(){ try { return JSON.parse(localStorage.getItem(LS_QUEUE)) || []; } catch { return []; } }
+function setQueue(q){ localStorage.setItem(LS_QUEUE, JSON.stringify(q)); }
+
+const keyOf = (w, ex) => `w${w}__${ex}`;
+
+async function api(path, method, body){
+  const cfg = getCfg();
+  if(!cfg) throw new Error("not configured");
+  const res = await fetch(cfg.url.replace(/\/$/,"") + path, {
+    method,
+    headers:{ "Content-Type":"application/json", "X-App-Key":cfg.appKey },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error(`API ${res.status}: ${t}`);
+  }
+  return res.json();
+}
+
+/* Pull all logs from server into the cache. */
+async function syncDown(){
+  const data = await api("/logs", "GET");
+  const cache = {};
+  (data.logs||[]).forEach(r => { cache[keyOf(r.week, r.exercise)] = {weight:r.weight, note:r.note, week:r.week}; });
+  setCache(cache);
+  return cache;
+}
+
+/* Try to flush any queued offline writes. */
+async function flushQueue(){
+  let q = getQueue();
+  if(!q.length) return;
+  const remaining = [];
+  for(const item of q){
+    try { await api("/logs", "POST", item); }
+    catch { remaining.push(item); }
+  }
+  setQueue(remaining);
+}
+
+/* ============================================================
+   APP STATE + RENDER (vanilla JS, no framework needed)
+   ============================================================ */
+let state = {
+  week: 1,
+  open: {},          // dayKey -> bool
+  editing: null,     // logKey being edited
+  draftW: "",
+  draftN: "",
+  cache: getCache(),
+  sync: "offline",   // ok | syncing | err | offline
+  saving: false,
+};
+
+const root = document.getElementById("root");
+
+function pill(k){ const [c,l] = MUSCLE[k]||["m-core",k]; return `<span class="pill ${c}">${l}</span>`; }
+
+function prevLogs(ex){
+  const out=[];
+  for(let w=1; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
+  return out;
+}
+
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function exerciseHTML(e, blk){
+  const k = keyOf(state.week, e.x);
+  const entry = state.cache[k];
+  const hist = prevLogs(e.x);
+  const editing = state.editing === k;
+
+  let logHTML;
+  if(!editing){
+    logHTML = `<div class="log-trig" data-log="${esc(e.x)}">${
+      entry
+        ? `<span class="chip filled">✓ Wk${state.week}: ${esc(entry.weight)} lb${entry.note?" · 📝":""} — tap to edit</span>`
+        : `<span class="chip empty">+ Log Week ${state.week}</span>`
+    }</div>`;
+  } else {
+    const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks</div>${
+      hist.map((h,i)=>{
+        const last = i===hist.length-1;
+        return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${esc(h.weight)} lb</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
+      }).join("")
+    }</div>` : "";
+    logHTML = `<div class="panel">${histHTML}
+      <div class="entry-lbl">Week ${state.week}</div>
+      <div class="editor">
+        <input class="inp" id="dw" type="number" inputmode="decimal" placeholder="Weight (lb)" value="${esc(state.draftW)}" />
+        <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
+        <button class="cancel" data-cancel="1">✕</button>
+      </div>
+      <textarea class="note-inp" id="dn" rows="2" placeholder="Notes — how did it feel? form, fatigue, PRs...">${esc(state.draftN)}</textarea>
+    </div>`;
+  }
+
+  return `<div class="ex">
+    <div class="ex-top"><span class="ex-name">${esc(e.x)}</span><span class="ex-sets">${esc(e.s)}</span></div>
+    <div class="ex-meta">${e.r?`<span class="rpe">${esc(e.r)}</span>`:""}${e.m.map(pill).join("")}</div>
+    <div class="ex-note">${esc(e.n)}</div>
+    ${logHTML}
+  </div>`;
+}
+
+function dayBodyHTML(dayKey, blk){
+  const s = blk.s;
+  if(dayKey==="rest"){
+    return `<div class="day-body"><p class="rest-txt">Full rest. No lifting, no running. Sits between Pull A and Push B — a real recovery window for your shoulders and triceps before the second half of the week.</p></div>`;
+  }
+  if(dayKey==="run"||dayKey==="run2"){
+    const r=s.run;
+    return `<div class="day-body">
+      <div class="info-grid">
+        <div class="ic"><div class="l">Distance</div><div class="v">${esc(r.dist)}</div></div>
+        <div class="ic"><div class="l">Pace</div><div class="v">${esc(r.pace)}</div></div>
+      </div>
+      <div class="warm"><b>Purpose:</b> ${esc(r.purpose)}</div>
+      <div class="po">${esc(r.n)}</div>
+    </div>`;
+  }
+  const d = s[dayKey];
+  return `<div class="day-body">
+    <div class="warm"><b>Warm-up:</b> ${esc(d.c)}</div>
+    ${d.e.map(e=>exerciseHTML(e,blk)).join("")}
+    <div class="po"><b>${dayKey==="wedLegs"?"Note:":"Progressive Overload:"}</b> ${esc(dayKey==="wedLegs"||dayKey==="legDay"?d.n:blk.po)}</div>
+  </div>`;
+}
+
+function daySubLabel(dayKey, blk){
+  if(dayKey==="rest") return "Full rest";
+  if(dayKey==="run"||dayKey==="run2") return "3–4 mi easy";
+  return blk.s[dayKey].t;
+}
+
+function render(){
+  const cfg = getCfg();
+  if(!cfg){ renderSetup(); return; }
+
+  const blk = BLOCKS[weekToBlock(state.week)];
+  const syncLabels = { ok:"Synced", syncing:"Syncing…", err:"Sync error — saved locally", offline:"Offline — saved locally" };
+
+  root.innerHTML = `
+    <div class="hdr">
+      <h1>Apex Training</h1>
+      <p>4 lifts · 2 runs · 2 leg days · Thu rest</p>
+      <span class="sync ${state.sync}" data-resync="1"><span class="dot"></span>${syncLabels[state.sync]}</span>
+    </div>
+
+    <div class="week-bar">
+      <button class="week-btn" data-week="-1" ${state.week<=1?"disabled":""}>‹</button>
+      <div class="week-info">
+        <div class="wk">Week ${state.week} / ${TOTAL_WEEKS}</div>
+        <div class="blk">${blk.name} · ${blk.subtitle}</div>
+      </div>
+      <button class="week-btn" data-week="1" ${state.week>=TOTAL_WEEKS?"disabled":""}>›</button>
+    </div>
+
+    <div class="block-meta">
+      <div class="bt">${blk.name} — ${blk.subtitle}</div>
+      <div class="bd">${esc(blk.desc)}</div>
+      <div class="tags"><span class="tag wk">${blk.weeks}</span><span class="tag ${blk.tag}">${blk.tagLabel}</span></div>
+    </div>
+
+    <div class="days">
+      ${DAYS.map(day=>{
+        const isOpen = !!state.open[day.k];
+        return `<div class="day">
+          <div class="day-hd" data-day="${day.k}">
+            <span class="badge ${day.b}">${day.l}</span>
+            <span class="day-name">${day.d}</span>
+            <span class="day-sub">${esc(daySubLabel(day.k, blk))}</span>
+            <span class="chev ${isOpen?"open":""}">▼</span>
+          </div>
+          ${isOpen?dayBodyHTML(day.k, blk):""}
+        </div>`;
+      }).join("")}
+    </div>
+
+    <div class="disc">Logs sync to your Turso database across devices. Designed for healthy adults bulking — eat in a surplus with adequate protein. Adjust loads based on daily readiness. Consult a physician before starting.</div>
+  `;
+
+  // restore focus + caret to the weight field while editing
+  if(state.editing){
+    const dw = document.getElementById("dw");
+    if(dw){ dw.focus(); dw.setSelectionRange(dw.value.length, dw.value.length); }
+  }
+  wire();
+}
+
+function renderSetup(err){
+  const cfg = getCfg() || {};
+  root.innerHTML = `
+    <div class="setup">
+      <h2>Connect your tracker</h2>
+      <p>Enter your Worker URL and app key once. These are stored only on this device. Do this on each device you want synced.</p>
+      <label>Worker URL</label>
+      <input id="su" placeholder="https://apex-training-api.yourname.workers.dev" value="${esc(cfg.url||"")}" />
+      <label>App Key</label>
+      <input id="sk" placeholder="your APP_KEY" value="${esc(cfg.appKey||"")}" />
+      <button id="sb">Connect</button>
+      ${err?`<div class="err">${esc(err)}</div>`:""}
+    </div>
+  `;
+  document.getElementById("sb").onclick = async ()=>{
+    const url = document.getElementById("su").value.trim();
+    const appKey = document.getElementById("sk").value.trim();
+    if(!url||!appKey){ renderSetup("Both fields are required."); return; }
+    setCfg({url, appKey});
+    state.sync="syncing"; 
+    try{
+      state.cache = await syncDown();
+      state.sync="ok";
+      render();
+    }catch(e){
+      localStorage.removeItem(LS_CFG);
+      renderSetup("Couldn't connect: " + e.message);
+    }
+  };
+}
+
+function wire(){
+  // settings gear via long-press on sync pill -> re-open setup
+  document.querySelectorAll("[data-resync]").forEach(el=>{
+    el.onclick = async ()=>{ await doSync(); };
+  });
+  document.querySelectorAll("[data-week]").forEach(el=>{
+    el.onclick = ()=>{
+      const delta = parseInt(el.getAttribute("data-week"),10);
+      const nw = Math.min(TOTAL_WEEKS, Math.max(1, state.week+delta));
+      if(nw!==state.week){ state.week=nw; state.editing=null; render(); }
+    };
+  });
+  document.querySelectorAll("[data-day]").forEach(el=>{
+    el.onclick = ()=>{
+      const k = el.getAttribute("data-day");
+      state.open[k] = !state.open[k];
+      render();
+    };
+  });
+  document.querySelectorAll("[data-log]").forEach(el=>{
+    el.onclick = ()=>{
+      const ex = el.getAttribute("data-log");
+      const k = keyOf(state.week, ex);
+      const existing = state.cache[k];
+      state.editing = k;
+      state.draftW = existing ? String(existing.weight||"") : "";
+      state.draftN = existing ? String(existing.note||"") : "";
+      render();
+    };
+  });
+  document.querySelectorAll("[data-cancel]").forEach(el=>{
+    el.onclick = ()=>{ state.editing=null; render(); };
+  });
+  document.querySelectorAll("[data-save]").forEach(el=>{
+    el.onclick = async ()=>{
+      const ex = el.getAttribute("data-save");
+      const dw = document.getElementById("dw");
+      const dn = document.getElementById("dn");
+      state.draftW = dw?dw.value:"";
+      state.draftN = dn?dn.value:"";
+      await saveEntry(ex);
+    };
+  });
+  // keep drafts in sync as user types (so re-renders don't lose input)
+  const dw = document.getElementById("dw");
+  if(dw) dw.oninput = ()=>{ state.draftW = dw.value; };
+  const dn = document.getElementById("dn");
+  if(dn) dn.oninput = ()=>{ state.draftN = dn.value; };
+}
+
+async function saveEntry(ex){
+  const k = keyOf(state.week, ex);
+  const entry = { weight: state.draftW, note: state.draftN, week: state.week };
+  // optimistic local write
+  state.cache[k] = entry;
+  setCache(state.cache);
+  state.saving = true; render();
+
+  const payload = { week: state.week, exercise: ex, weight: state.draftW, note: state.draftN };
+  try{
+    await api("/logs", "POST", payload);
+    state.sync = "ok";
+  }catch(e){
+    // queue it for later, mark sync state
+    const q = getQueue(); q.push(payload); setQueue(q);
+    state.sync = navigator.onLine ? "err" : "offline";
+  }
+  state.saving = false;
+  state.editing = null;
+  render();
+}
+
+async function doSync(){
+  if(!getCfg()) return;
+  state.sync="syncing"; render();
+  try{
+    await flushQueue();
+    state.cache = await syncDown();
+    state.sync="ok";
+  }catch(e){
+    state.sync = navigator.onLine ? "err" : "offline";
+  }
+  render();
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+window.addEventListener("online", ()=>{ doSync(); });
+window.addEventListener("offline", ()=>{ state.sync="offline"; render(); });
+
+(async function boot(){
+  render();                 // paint immediately from cache
+  if(getCfg()){
+    await doSync();         // then pull fresh + flush queue
+  }
+})();
+</script>
+</body>
+</html>
