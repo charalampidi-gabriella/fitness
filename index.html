@@ -112,6 +112,10 @@
 
   .entry-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--red);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;}
   .editor{display:flex;gap:6px;align-items:center;}
+  .editor-assist{display:flex;flex-direction:column;gap:6px;}
+  .editor-assist .inp{width:100%;}
+  .editor-assist .assist-actions{display:flex;gap:6px;align-items:center;}
+  .editor-assist .save{flex:1;}
   .inp{flex:1;min-width:0;font-size:14px;padding:9px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;}
   .inp:focus{outline:none;border-color:var(--red);}
   .save{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;padding:9px 16px;border-radius:var(--radius-sm);border:none;background:var(--red);color:#fff;cursor:pointer;white-space:nowrap;}
@@ -174,7 +178,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Back & Biceps",c:"Warm-up: 5 min row + scapular pull-ups",e:[
       {x:"Barbell Row (pronated)",s:"4×10",r:"RPE 6–7",n:"Primary back mass builder — heavy, controlled",m:["back"]},
-      {x:"Weighted Pull-Ups",s:"4×8",r:"RPE 6–7",n:"Add weight via belt; wide grip",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×8",r:"RPE 6–7",n:"Wide grip. Progress by using a lighter band or lower rack height.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 7",n:"Mid-back thickness; pause at peak",m:["back"]},
       {x:"Barbell Curl",s:"4×12",r:"RPE 7–8",n:"Main bicep mass builder — strict",m:["bi"]},
       {x:"Hammer Curl",s:"3×12",r:"RPE 7–8",n:"Brachialis — arm thickness",m:["bi"]},
@@ -229,7 +233,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Heavy Back & Biceps",c:"Warm-up: 5 min row + scap pulls",e:[
       {x:"Barbell Row",s:"5×6",r:"RPE 7–8",n:"Heavier than Block 1 — primary driver",m:["back"]},
-      {x:"Weighted Pull-Ups",s:"4×6",r:"RPE 7–8",n:"Add 10–15 lb from Block 1",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×6",r:"RPE 7–8",n:"Step up from Block 1 — lighter band or lower rack notch.",m:["back","bi"]},
       {x:"Pendlay Row",s:"2×8",r:"RPE 7–8",n:"Dead-stop, explosive — back power and thickness",m:["back"]},
       {x:"Barbell Curl",s:"4×10",r:"RPE 8",n:"Heavier than Block 1",m:["bi"]},
       {x:"Hammer Curl",s:"3×10",r:"RPE 8",n:"Arm thickness continues",m:["bi"]},
@@ -285,7 +289,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Max Volume Back & Biceps",c:"Warm-up: 5 min row",e:[
       {x:"Barbell Row",s:"5×8",r:"RPE 8",n:"High volume back mass",m:["back"]},
-      {x:"Weighted Pull-Ups",s:"4×8",r:"RPE 8",n:"Volume up from Block 2",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×8",r:"RPE 8",n:"Higher volume — hold same band/height, push more clean reps.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 8",n:"Added set for total back volume",m:["back"]},
       {x:"Barbell Curl",s:"4×12",r:"RPE 8–9",n:"High volume arm mass",m:["bi"]},
       {x:"Hammer Curl",s:"3×12",r:"RPE 8–9",n:"Arm thickness focus",m:["bi"]},
@@ -423,33 +427,65 @@ function prevLogs(ex){
 
 function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
+const isAssist = (e) => e && e.t === "assist";
+
+/* Pull-ups store band + rack height combined into the existing weight
+ * field as "<color> band • h<height>" so the backend stays generic. */
+function parseAssist(w){
+  if(!w) return { band: "", height: "" };
+  const m = String(w).match(/^(.*?)\s*band\s*[•·]\s*h\s*(.+)$/i);
+  if(m) return { band: m[1].trim(), height: m[2].trim() };
+  return { band: String(w), height: "" };
+}
+function formatAssist(band, height){
+  band = (band || "").trim();
+  height = (height || "").trim();
+  if(!band && !height) return "";
+  if(!band) return `h${height}`;
+  if(!height) return `${band} band`;
+  return `${band} band • h${height}`;
+}
+
 function exerciseHTML(e, blk){
   const k = keyOf(state.week, e.x);
   const entry = state.cache[k];
   const hist = prevLogs(e.x);
   const editing = state.editing === k;
+  const assist = isAssist(e);
+  const unit = (val) => assist ? esc(val) : `${esc(val)} lb`;
 
   let logHTML;
   if(!editing){
     logHTML = `<div class="log-trig" data-log="${esc(e.x)}">${
       entry
-        ? `<span class="chip filled">✓ Wk${state.week}: ${esc(entry.weight)} lb${entry.note?" · 📝":""} — tap to edit</span>`
+        ? `<span class="chip filled">✓ Wk${state.week}: ${unit(entry.weight)}${entry.note?" · 📝":""} — tap to edit</span>`
         : `<span class="chip empty">+ Log Week ${state.week}</span>`
     }</div>`;
   } else {
     const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks</div>${
       hist.map((h,i)=>{
         const last = i===hist.length-1;
-        return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${esc(h.weight)} lb</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
+        return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${unit(h.weight)}</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
       }).join("")
     }</div>` : "";
+    const { band, height } = assist ? parseAssist(state.draftW) : { band: "", height: "" };
+    const editorHTML = assist
+      ? `<div class="editor-assist">
+          <input class="inp" id="db" type="text" placeholder="Band color (e.g., Red, Black)" value="${esc(band)}" />
+          <input class="inp" id="dh" type="text" inputmode="decimal" placeholder="Rack height / pin #" value="${esc(height)}" />
+          <div class="assist-actions">
+            <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
+            <button class="cancel" data-cancel="1">✕</button>
+          </div>
+        </div>`
+      : `<div class="editor">
+          <input class="inp" id="dw" type="number" inputmode="decimal" placeholder="Weight (lb)" value="${esc(state.draftW)}" />
+          <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
+          <button class="cancel" data-cancel="1">✕</button>
+        </div>`;
     logHTML = `<div class="panel">${histHTML}
       <div class="entry-lbl">Week ${state.week}</div>
-      <div class="editor">
-        <input class="inp" id="dw" type="number" inputmode="decimal" placeholder="Weight (lb)" value="${esc(state.draftW)}" />
-        <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
-        <button class="cancel" data-cancel="1">✕</button>
-      </div>
+      ${editorHTML}
       <textarea class="note-inp" id="dn" rows="2" placeholder="Notes — how did it feel? form, fatigue, PRs...">${esc(state.draftN)}</textarea>
     </div>`;
   }
@@ -541,8 +577,12 @@ function render(){
 
   // restore focus + caret to the weight field while editing
   if(state.editing){
-    const dw = document.getElementById("dw");
-    if(dw){ dw.focus(); dw.setSelectionRange(dw.value.length, dw.value.length); }
+    const focusEl = document.getElementById("db") || document.getElementById("dw");
+    if(focusEl){
+      focusEl.focus();
+      // setSelectionRange throws on type="number" in Chromium — skip silently.
+      try { focusEl.setSelectionRange(focusEl.value.length, focusEl.value.length); } catch {}
+    }
   }
   wire();
 }
@@ -615,8 +655,14 @@ function wire(){
     el.onclick = async ()=>{
       const ex = el.getAttribute("data-save");
       const dw = document.getElementById("dw");
+      const db = document.getElementById("db");
+      const dh = document.getElementById("dh");
       const dn = document.getElementById("dn");
-      state.draftW = dw?dw.value:"";
+      if(db && dh){
+        state.draftW = formatAssist(db.value, dh.value);
+      } else if(dw){
+        state.draftW = dw.value;
+      }
       state.draftN = dn?dn.value:"";
       await saveEntry(ex);
     };
@@ -624,6 +670,11 @@ function wire(){
   // keep drafts in sync as user types (so re-renders don't lose input)
   const dw = document.getElementById("dw");
   if(dw) dw.oninput = ()=>{ state.draftW = dw.value; };
+  const db = document.getElementById("db");
+  const dh = document.getElementById("dh");
+  const syncAssist = ()=>{ state.draftW = formatAssist(db?db.value:"", dh?dh.value:""); };
+  if(db) db.oninput = syncAssist;
+  if(dh) dh.oninput = syncAssist;
   const dn = document.getElementById("dn");
   if(dn) dn.oninput = ()=>{ state.draftN = dn.value; };
 }
