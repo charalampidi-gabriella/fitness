@@ -421,7 +421,8 @@ function pill(k){ const [c,l] = MUSCLE[k]||["m-core",k]; return `<span class="pi
 
 function prevLogs(ex){
   const out=[];
-  for(let w=1; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
+  const blockStart = Math.floor((state.week - 1) / 4) * 4 + 1;
+  for(let w=blockStart; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
   return out;
 }
 
@@ -433,20 +434,21 @@ function exerciseHTML(e, blk){
   const hist = prevLogs(e.x);
   const editing = state.editing === k;
 
+  const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks in this block</div>${
+    hist.map((h,i)=>{
+      const last = i===hist.length-1;
+      return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${esc(h.weight)} lb</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
+    }).join("")
+  }</div>` : "";
+
   let logHTML;
   if(!editing){
-    logHTML = `<div class="log-trig" data-log="${esc(e.x)}">${
+    logHTML = `${histHTML}<div class="log-trig" data-log="${esc(e.x)}">${
       entry
         ? `<span class="chip filled">✓ Wk${state.week}: ${esc(entry.weight)} lb — tap to edit</span>${entry.note?`<div class="cur-note">📝 ${esc(entry.note)}</div>`:""}`
         : `<span class="chip empty">+ Log Week ${state.week}</span>`
     }</div>`;
   } else {
-    const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks</div>${
-      hist.map((h,i)=>{
-        const last = i===hist.length-1;
-        return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${esc(h.weight)} lb</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
-      }).join("")
-    }</div>` : "";
     logHTML = `<div class="panel">${histHTML}
       <div class="entry-lbl">Week ${state.week}</div>
       <div class="editor">
