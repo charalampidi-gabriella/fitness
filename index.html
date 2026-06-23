@@ -555,9 +555,9 @@ function renderSetup(err){
   root.innerHTML = `
     <div class="setup">
       <h2>Connect your tracker</h2>
-      <p>Enter your Worker URL and app key once. These are stored only on this device. Do this on each device you want synced.</p>
-      <label>Worker URL</label>
-      <input id="su" placeholder="https://apex-training-api.yourname.workers.dev" value="${esc(cfg.url||"")}" />
+      <p>Enter your API URL and app key once. These are stored only on this device. Do this on each device you want synced.</p>
+      <label>API URL</label>
+      <input id="su" placeholder="https://your-app.vercel.app/api" value="${esc(cfg.url||"")}" />
       <label>App Key</label>
       <input id="sk" placeholder="your APP_KEY" value="${esc(cfg.appKey||"")}" />
       <button id="sb">Connect</button>
