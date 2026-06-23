@@ -107,6 +107,7 @@
   .hrow .w{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;}
   .hrow .v{font-size:12px;font-weight:600;}
   .hrow .last{font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(224,152,46,0.18);color:#e0982e;padding:2px 6px;border-radius:99px;}
+  .cur-note{font-size:12px;color:var(--text2);font-style:italic;line-height:1.45;margin-top:6px;}
   .hnote{font-size:11px;color:var(--text2);font-style:italic;padding:2px 0 5px;line-height:1.4;border-bottom:0.5px solid var(--line);}
   .hb:last-child .hnote{border-bottom:none;}
 
@@ -436,7 +437,7 @@ function exerciseHTML(e, blk){
   if(!editing){
     logHTML = `<div class="log-trig" data-log="${esc(e.x)}">${
       entry
-        ? `<span class="chip filled">✓ Wk${state.week}: ${esc(entry.weight)} lb${entry.note?" · 📝":""} — tap to edit</span>`
+        ? `<span class="chip filled">✓ Wk${state.week}: ${esc(entry.weight)} lb — tap to edit</span>${entry.note?`<div class="cur-note">📝 ${esc(entry.note)}</div>`:""}`
         : `<span class="chip empty">+ Log Week ${state.week}</span>`
     }</div>`;
   } else {
