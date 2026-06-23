@@ -545,7 +545,11 @@ function render(){
   // restore focus + caret to the weight field while editing
   if(state.editing){
     const dw = document.getElementById("dw");
-    if(dw){ dw.focus(); dw.setSelectionRange(dw.value.length, dw.value.length); }
+    if(dw){
+      dw.focus();
+      // setSelectionRange throws on type="number" in Chromium — skip silently.
+      try { dw.setSelectionRange(dw.value.length, dw.value.length); } catch {}
+    }
   }
   wire();
 }
