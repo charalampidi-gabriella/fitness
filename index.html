@@ -431,22 +431,36 @@ function prevLogs(ex){
 
 function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
+/* RIR (reps in reserve) for an RPE string like "RPE 6–7" or "RPE 5".
+ * RIR = 10 - RPE, so RPE 5–6 → 4–5 RIR, RPE 7–8 → 2–3 RIR, RPE 10 → 0. */
+function rpeToRir(rpeStr){
+  const nums = (rpeStr || "").match(/\d+/g);
+  if(!nums) return null;
+  const rirs = nums.map(n => Math.max(0, 10 - Number(n)));
+  const lo = Math.min(...rirs), hi = Math.max(...rirs);
+  return lo === hi ? `${lo}` : `${lo}–${hi}`;
+}
+
 /* Suggest what to do this week for an exercise based on the block's
  * progressive-overload rule (Add 5–10 lb/wk or +1–2 reps) and the
  * exercise's RPE target. Looks at the most recent log this block. */
 function weekSuggestion(ex, hist){
   const rpe = ex.r || "the prescribed RPE";
+  const rir = rpeToRir(ex.r);
+  const tank = rir
+    ? `<b>${rir} ${rir === "1" ? "rep" : "reps"} in the tank</b>`
+    : "a couple reps in the tank";
   const weekInBlock = ((state.week - 1) % 4) + 1;
   if(!hist.length){
-    return `Week ${weekInBlock} of this block — set a <b>baseline at ${esc(rpe)}</b>. Pick a weight where you finish all reps with ~2 in the tank.`;
+    return `Week ${weekInBlock} of this block — set a <b>baseline at ${esc(rpe)}</b>. Pick a weight where you finish all reps with ${tank}.`;
   }
   const last = hist[hist.length - 1];
   const lw = parseFloat(last.weight);
   if(isNaN(lw)){
-    return `Last logged: Wk ${last.week} — "${esc(last.weight)}". Beat it: add a small load bump <b>or</b> 1–2 reps per set while staying at ${esc(rpe)}.`;
+    return `Last logged: Wk ${last.week} — "${esc(last.weight)}". Beat it: add a small load bump <b>or</b> 1–2 reps per set while staying at ${esc(rpe)} (${tank}).`;
   }
   const lo = lw + 5, hi = lw + 10;
-  return `Last week (Wk ${last.week}): <b>${esc(last.weight)} lb</b>. Try <b>${lo}–${hi} lb</b> at ${esc(rpe)} — or stay at ${esc(last.weight)} lb and add <b>1–2 reps</b> per set if it still felt heavy.`;
+  return `Last week (Wk ${last.week}): <b>${esc(last.weight)} lb</b>. Try <b>${lo}–${hi} lb</b> at ${esc(rpe)} — leave ${tank}, or stay at ${esc(last.weight)} lb and add <b>1–2 reps</b> per set if it still felt heavy.`;
 }
 
 function exerciseHTML(e, blk){
