@@ -46,7 +46,10 @@
   .week-info .blk{font-size:11px;color:var(--text2);margin-top:1px;}
 
   /* Block meta */
-  .block-meta{margin:12px 14px;background:var(--bg2);border:0.5px solid var(--line);border-radius:var(--radius);padding:13px 14px;}
+  .block-meta{margin:12px 14px;background:var(--card2);border:0.5px solid var(--line2);border-left:3px solid var(--line2);border-radius:var(--radius);padding:13px 14px;}
+  .block-meta.bm-vol{background:rgba(63,140,233,0.08);border-left-color:#6ba8e8;}
+  .block-meta.bm-int{background:rgba(224,152,46,0.08);border-left-color:#e0982e;}
+  .block-meta.bm-peak{background:rgba(226,75,74,0.08);border-left-color:#e8706f;}
   .block-meta .bt{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;}
   .block-meta .bd{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.5;}
   .tags{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
@@ -559,7 +562,7 @@ function render(){
       <button class="week-btn" data-week="1" ${state.week>=TOTAL_WEEKS?"disabled":""}>›</button>
     </div>
 
-    <div class="block-meta">
+    <div class="block-meta bm-${blk.tag}">
       <div class="bt">${blk.name} — ${blk.subtitle}</div>
       <div class="bd">${esc(blk.desc)}</div>
       <div class="tags"><span class="tag wk">${blk.weeks}</span><span class="tag ${blk.tag}">${blk.tagLabel}</span></div>
