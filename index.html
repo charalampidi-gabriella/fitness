@@ -107,15 +107,15 @@
   .hrow .w{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;}
   .hrow .v{font-size:12px;font-weight:600;}
   .hrow .last{font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(224,152,46,0.18);color:#e0982e;padding:2px 6px;border-radius:99px;}
+  .cur-note{font-size:12px;color:var(--text2);font-style:italic;line-height:1.45;margin-top:6px;}
+  .sugg{font-size:11.5px;color:var(--text2);line-height:1.5;margin:8px 0;padding:8px 10px;background:rgba(224,152,46,0.08);border-left:2px solid #e0982e;border-radius:4px;}
+  .sugg b{color:var(--text);font-weight:700;}
+  .sugg-l{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#e0982e;margin-bottom:3px;}
   .hnote{font-size:11px;color:var(--text2);font-style:italic;padding:2px 0 5px;line-height:1.4;border-bottom:0.5px solid var(--line);}
   .hb:last-child .hnote{border-bottom:none;}
 
   .entry-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--red);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;}
   .editor{display:flex;gap:6px;align-items:center;}
-  .editor-assist{display:flex;flex-direction:column;gap:6px;}
-  .editor-assist .inp{width:100%;}
-  .editor-assist .assist-actions{display:flex;gap:6px;align-items:center;}
-  .editor-assist .save{flex:1;}
   .inp{flex:1;min-width:0;font-size:14px;padding:9px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;}
   .inp:focus{outline:none;border-color:var(--red);}
   .save{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;padding:9px 16px;border-radius:var(--radius-sm);border:none;background:var(--red);color:#fff;cursor:pointer;white-space:nowrap;}
@@ -178,7 +178,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Back & Biceps",c:"Warm-up: 5 min row + scapular pull-ups",e:[
       {x:"Barbell Row (pronated)",s:"4×10",r:"RPE 6–7",n:"Primary back mass builder — heavy, controlled",m:["back"]},
-      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×8",r:"RPE 6–7",n:"Wide grip. Progress by using a lighter band or lower rack height.",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",s:"4×8",r:"RPE 6–7",n:"Wide grip. Log assistance weight — progress by reducing it.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 7",n:"Mid-back thickness; pause at peak",m:["back"]},
       {x:"Barbell Curl",s:"4×12",r:"RPE 7–8",n:"Main bicep mass builder — strict",m:["bi"]},
       {x:"Hammer Curl",s:"3×12",r:"RPE 7–8",n:"Brachialis — arm thickness",m:["bi"]},
@@ -233,7 +233,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Heavy Back & Biceps",c:"Warm-up: 5 min row + scap pulls",e:[
       {x:"Barbell Row",s:"5×6",r:"RPE 7–8",n:"Heavier than Block 1 — primary driver",m:["back"]},
-      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×6",r:"RPE 7–8",n:"Step up from Block 1 — lighter band or lower rack notch.",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",s:"4×6",r:"RPE 7–8",n:"Step up from Block 1 — less assistance weight.",m:["back","bi"]},
       {x:"Pendlay Row",s:"2×8",r:"RPE 7–8",n:"Dead-stop, explosive — back power and thickness",m:["back"]},
       {x:"Barbell Curl",s:"4×10",r:"RPE 8",n:"Heavier than Block 1",m:["bi"]},
       {x:"Hammer Curl",s:"3×10",r:"RPE 8",n:"Arm thickness continues",m:["bi"]},
@@ -289,7 +289,7 @@ const BLOCKS = [
     ]},
     pullA:{t:"Pull A — Max Volume Back & Biceps",c:"Warm-up: 5 min row",e:[
       {x:"Barbell Row",s:"5×8",r:"RPE 8",n:"High volume back mass",m:["back"]},
-      {x:"Band-Assisted Pull-Ups",t:"assist",s:"4×8",r:"RPE 8",n:"Higher volume — hold same band/height, push more clean reps.",m:["back","bi"]},
+      {x:"Band-Assisted Pull-Ups",s:"4×8",r:"RPE 8",n:"Higher volume — hold same assistance weight, push more clean reps.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 8",n:"Added set for total back volume",m:["back"]},
       {x:"Barbell Curl",s:"4×12",r:"RPE 8–9",n:"High volume arm mass",m:["bi"]},
       {x:"Hammer Curl",s:"3×12",r:"RPE 8–9",n:"Arm thickness focus",m:["bi"]},
@@ -421,29 +421,47 @@ function pill(k){ const [c,l] = MUSCLE[k]||["m-core",k]; return `<span class="pi
 
 function prevLogs(ex){
   const out=[];
-  for(let w=1; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
+  const blockStart = Math.floor((state.week - 1) / 4) * 4 + 1;
+  for(let w=blockStart; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
   return out;
 }
 
 function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
-const isAssist = (e) => e && e.t === "assist";
+/* Older logs may have been saved in a free-text format (e.g. "Red band • h3").
+ * Only append " lb" when the value looks numeric so legacy entries stay readable. */
+const unit = (val) => /^[\d.]+$/.test(String(val||"").trim()) ? `${esc(val)} lb` : esc(val);
 
-/* Pull-ups store band + rack height combined into the existing weight
- * field as "<color> band • h<height>" so the backend stays generic. */
-function parseAssist(w){
-  if(!w) return { band: "", height: "" };
-  const m = String(w).match(/^(.*?)\s*band\s*[•·]\s*h\s*(.+)$/i);
-  if(m) return { band: m[1].trim(), height: m[2].trim() };
-  return { band: String(w), height: "" };
+/* RIR (reps in reserve) for an RPE string like "RPE 6–7" or "RPE 5".
+ * RIR = 10 - RPE, so RPE 5–6 → 4–5 RIR, RPE 7–8 → 2–3 RIR, RPE 10 → 0. */
+function rpeToRir(rpeStr){
+  const nums = (rpeStr || "").match(/\d+/g);
+  if(!nums) return null;
+  const rirs = nums.map(n => Math.max(0, 10 - Number(n)));
+  const lo = Math.min(...rirs), hi = Math.max(...rirs);
+  return lo === hi ? `${lo}` : `${lo}–${hi}`;
 }
-function formatAssist(band, height){
-  band = (band || "").trim();
-  height = (height || "").trim();
-  if(!band && !height) return "";
-  if(!band) return `h${height}`;
-  if(!height) return `${band} band`;
-  return `${band} band • h${height}`;
+
+/* Suggest what to do this week for an exercise based on the block's
+ * progressive-overload rule (Add 5–10 lb/wk or +1–2 reps) and the
+ * exercise's RPE target. Looks at the most recent log this block. */
+function weekSuggestion(ex, hist){
+  const rpe = ex.r || "the prescribed RPE";
+  const rir = rpeToRir(ex.r);
+  const tank = rir
+    ? `<b>${rir} ${rir === "1" ? "rep" : "reps"} in the tank</b>`
+    : "a couple reps in the tank";
+  const weekInBlock = ((state.week - 1) % 4) + 1;
+  if(!hist.length){
+    return `Week ${weekInBlock} of this block — set a <b>baseline at ${esc(rpe)}</b>. Pick a weight where you finish all reps with ${tank}.`;
+  }
+  const last = hist[hist.length - 1];
+  const lw = parseFloat(last.weight);
+  if(isNaN(lw)){
+    return `Last logged: Wk ${last.week} — "${esc(last.weight)}". Beat it: add a small load bump <b>or</b> 1–2 reps per set while staying at ${esc(rpe)} (${tank}).`;
+  }
+  const lo = lw + 5, hi = lw + 10;
+  return `Last week (Wk ${last.week}): <b>${unit(last.weight)}</b>. Try <b>${lo}–${hi} lb</b> at ${esc(rpe)} — leave ${tank}, or stay at ${unit(last.weight)} and add <b>1–2 reps</b> per set if it still felt heavy.`;
 }
 
 function exerciseHTML(e, blk){
@@ -451,41 +469,31 @@ function exerciseHTML(e, blk){
   const entry = state.cache[k];
   const hist = prevLogs(e.x);
   const editing = state.editing === k;
-  const assist = isAssist(e);
-  const unit = (val) => assist ? esc(val) : `${esc(val)} lb`;
+
+  const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks in this block</div>${
+    hist.map((h,i)=>{
+      const last = i===hist.length-1;
+      return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${unit(h.weight)}</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
+    }).join("")
+  }</div>` : "";
+
+  const suggHTML = `<div class="sugg"><span class="sugg-l">💪 This week</span>${weekSuggestion(e, hist)}</div>`;
 
   let logHTML;
   if(!editing){
-    logHTML = `<div class="log-trig" data-log="${esc(e.x)}">${
+    logHTML = `${histHTML}${suggHTML}<div class="log-trig" data-log="${esc(e.x)}">${
       entry
-        ? `<span class="chip filled">✓ Wk${state.week}: ${unit(entry.weight)}${entry.note?" · 📝":""} — tap to edit</span>`
+        ? `<span class="chip filled">✓ Wk${state.week}: ${unit(entry.weight)} — tap to edit</span>${entry.note?`<div class="cur-note">📝 ${esc(entry.note)}</div>`:""}`
         : `<span class="chip empty">+ Log Week ${state.week}</span>`
     }</div>`;
   } else {
-    const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks</div>${
-      hist.map((h,i)=>{
-        const last = i===hist.length-1;
-        return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${unit(h.weight)}</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
-      }).join("")
-    }</div>` : "";
-    const { band, height } = assist ? parseAssist(state.draftW) : { band: "", height: "" };
-    const editorHTML = assist
-      ? `<div class="editor-assist">
-          <input class="inp" id="db" type="text" placeholder="Band color (e.g., Red, Black)" value="${esc(band)}" />
-          <input class="inp" id="dh" type="text" inputmode="decimal" placeholder="Rack height / pin #" value="${esc(height)}" />
-          <div class="assist-actions">
-            <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
-            <button class="cancel" data-cancel="1">✕</button>
-          </div>
-        </div>`
-      : `<div class="editor">
-          <input class="inp" id="dw" type="number" inputmode="decimal" placeholder="Weight (lb)" value="${esc(state.draftW)}" />
-          <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
-          <button class="cancel" data-cancel="1">✕</button>
-        </div>`;
-    logHTML = `<div class="panel">${histHTML}
+    logHTML = `<div class="panel">${histHTML}${suggHTML}
       <div class="entry-lbl">Week ${state.week}</div>
-      ${editorHTML}
+      <div class="editor">
+        <input class="inp" id="dw" type="number" inputmode="decimal" placeholder="Weight (lb)" value="${esc(state.draftW)}" />
+        <button class="save" data-save="${esc(e.x)}" ${state.saving?"disabled":""}>${state.saving?"...":"Save"}</button>
+        <button class="cancel" data-cancel="1">✕</button>
+      </div>
       <textarea class="note-inp" id="dn" rows="2" placeholder="Notes — how did it feel? form, fatigue, PRs...">${esc(state.draftN)}</textarea>
     </div>`;
   }
@@ -577,7 +585,7 @@ function render(){
 
   // restore focus + caret to the weight field while editing
   if(state.editing){
-    const focusEl = document.getElementById("db") || document.getElementById("dw");
+    const focusEl = document.getElementById("dw");
     if(focusEl){
       focusEl.focus();
       // setSelectionRange throws on type="number" in Chromium — skip silently.
@@ -655,14 +663,8 @@ function wire(){
     el.onclick = async ()=>{
       const ex = el.getAttribute("data-save");
       const dw = document.getElementById("dw");
-      const db = document.getElementById("db");
-      const dh = document.getElementById("dh");
       const dn = document.getElementById("dn");
-      if(db && dh){
-        state.draftW = formatAssist(db.value, dh.value);
-      } else if(dw){
-        state.draftW = dw.value;
-      }
+      if(dw) state.draftW = dw.value;
       state.draftN = dn?dn.value:"";
       await saveEntry(ex);
     };
@@ -670,11 +672,6 @@ function wire(){
   // keep drafts in sync as user types (so re-renders don't lose input)
   const dw = document.getElementById("dw");
   if(dw) dw.oninput = ()=>{ state.draftW = dw.value; };
-  const db = document.getElementById("db");
-  const dh = document.getElementById("dh");
-  const syncAssist = ()=>{ state.draftW = formatAssist(db?db.value:"", dh?dh.value:""); };
-  if(db) db.oninput = syncAssist;
-  if(dh) dh.oninput = syncAssist;
   const dn = document.getElementById("dn");
   if(dn) dn.oninput = ()=>{ state.draftN = dn.value; };
 }
