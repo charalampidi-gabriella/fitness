@@ -1,4 +1,4 @@
-# Apex Training — Setup Guide
+# Lift + Run — Setup Guide
 
 You're wiring up 3 pieces:
 

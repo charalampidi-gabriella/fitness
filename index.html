@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#16181c" />
-<title>Apex Training</title>
+<title>Lift + Run</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -548,7 +548,7 @@ function render(){
 
   root.innerHTML = `
     <div class="hdr">
-      <h1>Apex Training</h1>
+      <h1>Lift + Run</h1>
       <p>4 lifts · 2 runs · 2 leg days · Thu rest</p>
       <span class="sync ${state.sync}" data-resync="1"><span class="dot"></span>${syncLabels[state.sync]}</span>
     </div>
@@ -605,7 +605,7 @@ function renderSetup(err){
       <h2>Connect your tracker</h2>
       <p>Enter your Worker URL and app key once. These are stored only on this device. Do this on each device you want synced.</p>
       <label>Worker URL</label>
-      <input id="su" placeholder="https://apex-training-api.yourname.workers.dev" value="${esc(cfg.url||"")}" />
+      <input id="su" placeholder="https://lift-run-api.yourname.workers.dev" value="${esc(cfg.url||"")}" />
       <label>App Key</label>
       <input id="sk" placeholder="your APP_KEY" value="${esc(cfg.appKey||"")}" />
       <button id="sb">Connect</button>

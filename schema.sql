@@ -1,4 +1,4 @@
--- Apex Training Program — log storage schema
+-- Lift + Run Program — log storage schema
 -- Run this once against your Turso database to set up the table.
 --
 --   turso db shell fitness-charalampidi-gabriella < schema.sql

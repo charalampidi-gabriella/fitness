@@ -1,5 +1,5 @@
 /**
- * Apex Training — backend API (Vercel Edge Function)
+ * Lift + Run — backend API (Vercel Edge Function)
  *
  * Catch-all handler for /api/*. Holds the Turso DB token server-side so it
  * never reaches the browser.
