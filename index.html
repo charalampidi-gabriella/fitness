@@ -110,6 +110,8 @@
   .hrow .w{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;}
   .hrow .v{font-size:12px;font-weight:600;}
   .hrow .last{font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(224,152,46,0.18);color:#e0982e;padding:2px 6px;border-radius:99px;}
+  .hb.prev{opacity:0.62;}
+  .hrow .blkb{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;background:var(--card);color:var(--text3);padding:2px 6px;border-radius:99px;border:0.5px solid var(--line2);}
   .cur-note{font-size:12px;color:var(--text2);font-style:italic;line-height:1.45;margin-top:6px;}
   .sugg{font-size:11.5px;color:var(--text2);line-height:1.5;margin:8px 0;padding:8px 10px;background:rgba(224,152,46,0.08);border-left:2px solid #e0982e;border-radius:4px;}
   .sugg b{color:var(--text);font-weight:700;}
@@ -172,7 +174,7 @@ const BLOCKS = [
   s:{
     pushA:{t:"Push A — Chest, Shoulders & Triceps",c:"Warm-up: 5 min light cardio + band pull-aparts",e:[
       {x:"Flat Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Main chest mass builder. Add weight weekly.",m:["chest","tri"]},
-      {x:"Incline DB Press",s:"4×10",r:"RPE 6–7",n:"Upper chest — full stretch at bottom",m:["chest","sh"]},
+      {x:"Chest Fly (machine or cable)",s:"4×12",r:"RPE 7",n:"Constant tension — deep stretch at the bottom, squeeze without slamming handles together",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×10",r:"RPE 6–7",n:"Full ROM overhead; control the negative",m:["sh","tri"]},
       {x:"Lateral Raises",s:"4×15",r:"RPE 7–8",n:"Side delt volume — where shoulder width comes from",m:["sh"]},
       {x:"Skull Crushers (EZ-bar)",s:"3×12",r:"RPE 7–8",n:"Tricep mass — control the eccentric",m:["tri"]},
@@ -188,10 +190,9 @@ const BLOCKS = [
     ]},
     pushB:{t:"Push B — Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio + band work",e:[
       {x:"Incline Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Upper chest — different angle than Push A",m:["chest","sh"]},
-      {x:"Flat DB Press",s:"3×12",r:"RPE 7",n:"Greater stretch than barbell",m:["chest","tri"]},
       {x:"Arnold Press",s:"3×10",r:"RPE 6–7",n:"Rotation hits all 3 delt heads",m:["sh"]},
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 7–8",n:"Constant tension — different stimulus than DB",m:["sh"]},
-      {x:"Close-Grip Bench Press",s:"3×10",r:"RPE 6–7",n:"Tricep-dominant pressing for arm mass",m:["tri","chest"]},
+      {x:"Close-Grip Push-Ups (bench)",s:"3–4×8",r:"RPE 6–7",n:"Hands close on a bench — tricep-dominant. Log sets×reps; progress by adding reps or a set.",m:["tri","chest"]},
       {x:"Overhead Tricep Extension (cable)",s:"3×12",r:"RPE 7–8",n:"Long head — biggest tricep mass driver",m:["tri"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
     ]},
@@ -214,7 +215,6 @@ const BLOCKS = [
       {x:"Romanian Deadlift",s:"4×10",r:"RPE 6–7",n:"Slow negative — full hamstring stretch",m:["ham","glute"]},
       {x:"Leg Press",s:"3×12",r:"RPE 6–7",n:"High foot placement — quad + glute",m:["quad","glute"]},
       {x:"Leg Curl (lying)",s:"3×12",r:"RPE 7",n:"Pause at top, control negative",m:["ham"]},
-      {x:"Bulgarian Split Squat",s:"3×10 each",r:"RPE 6–7",n:"DBs in hand; quad-dominant lean",m:["quad","ham"]},
       {x:"Leg Extension",s:"3×15",r:"RPE 7–8",n:"Isolation finisher — squeeze at top",m:["quad"]},
       {x:"Standing Calf Raises",s:"4×15",r:"RPE 7",n:"Full ROM, pause at stretch",m:["core"]},
     ],n:"A few hours after your morning run — legs get a mostly fresh effort. Your one real dedicated leg session each week."},
@@ -227,10 +227,10 @@ const BLOCKS = [
   s:{
     pushA:{t:"Push A — Heavy Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets on bench",e:[
       {x:"Flat Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"75–82% 1RM — heavier than Block 1",m:["chest","tri"]},
-      {x:"Incline DB Press",s:"4×8",r:"RPE 7–8",n:"Push the weight up from Block 1",m:["chest","sh"]},
+      {x:"Chest Fly (machine or cable)",s:"4×10",r:"RPE 7–8",n:"Heavier than Block 1 — keep the deep stretch",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×8",r:"RPE 7–8",n:"Heavier; controlled tempo",m:["sh","tri"]},
       {x:"Lateral Raises",s:"4×15",r:"RPE 8",n:"Stay high-rep — hypertrophy isolation",m:["sh"]},
-      {x:"Weighted Dips",s:"3×10",r:"RPE 7–8",n:"Add weight via belt — tricep + chest",m:["tri","chest"]},
+      {x:"Assisted Dips (machine)",s:"3×10",r:"RPE 7–8",n:"Counterweighted machine — log the assistance weight. Progress by reducing it.",m:["tri","chest"]},
       {x:"Overhead Tricep Extension",s:"3×12",r:"RPE 8",n:"Long head volume — non-negotiable",m:["tri"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health every session",m:["sh","back"]},
     ]},
@@ -243,9 +243,8 @@ const BLOCKS = [
     ]},
     pushB:{t:"Push B — Heavy Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
       {x:"Incline Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"Heavier — upper chest strength",m:["chest","sh"]},
-      {x:"Flat DB Press",s:"4×8",r:"RPE 7–8",n:"Heavier; full stretch",m:["chest","tri"]},
       {x:"Arnold Press",s:"3×8",r:"RPE 7–8",n:"Heavier than Block 1",m:["sh"]},
-      {x:"Close-Grip Bench Press",s:"4×8",r:"RPE 7–8",n:"Tricep-dominant — real pressing strength",m:["tri","chest"]},
+      {x:"Close-Grip Push-Ups (bench)",s:"4×10",r:"RPE 7–8",n:"You ended Block 1 at 4×8 — push reps up, or elevate feet to load it more",m:["tri","chest"]},
       {x:"JM Press",s:"3×8",r:"RPE 8",n:"Powerlifter's lockout move — tricep mass + strength",m:["tri"]},
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8",n:"High rep for delt hypertrophy",m:["sh"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
@@ -269,7 +268,7 @@ const BLOCKS = [
       {x:"Romanian Deadlift",s:"4×8",r:"RPE 7–8",n:"Heavier; hamstring overload",m:["ham","glute"]},
       {x:"Front Squat",s:"3×8",r:"RPE 7",n:"Added this block — upper back + quad",m:["quad"]},
       {x:"Leg Curl (lying)",s:"3×10",r:"RPE 7–8",n:"Heavier than Block 1",m:["ham"]},
-      {x:"Bulgarian Split Squat",s:"3×8 each",r:"RPE 7–8",n:"Heavier DBs",m:["quad","ham"]},
+      {x:"Single-Leg Leg Press",s:"3×10 each",r:"RPE 7–8",n:"Unilateral quad/glute — replaces Bulgarians. One foot centered on the platform, controlled reps.",m:["quad","glute"]},
       {x:"Leg Extension",s:"3×15",r:"RPE 8",n:"Isolation finisher",m:["quad"]},
       {x:"Standing Calf Raises",s:"4×15",r:"RPE 7",n:"Weighted if possible",m:["core"]},
     ],n:"Same timing as Block 1. Load is climbing — real strength work now."},
@@ -282,8 +281,7 @@ const BLOCKS = [
   s:{
     pushA:{t:"Push A — Max Volume Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets",e:[
       {x:"Flat Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest at this rep range so far",m:["chest","tri"]},
-      {x:"Incline DB Press",s:"4×10",r:"RPE 8",n:"High volume — chest priority",m:["chest","sh"]},
-      {x:"Cable Chest Fly",s:"3×15",r:"RPE 8–9",n:"Added isolation for total chest volume",m:["chest"]},
+      {x:"Chest Fly (machine or cable)",s:"4×15",r:"RPE 8–9",n:"Peak fly volume — extra set replaces the removed incline press",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×10",r:"RPE 8",n:"Volume high for delt growth",m:["sh","tri"]},
       {x:"Lateral Raises",s:"4×15",r:"RPE 8–9",n:"Still the #1 driver of shoulder width",m:["sh"]},
       {x:"Skull Crushers",s:"4×12",r:"RPE 8",n:"Increased volume from earlier blocks",m:["tri"]},
@@ -300,9 +298,8 @@ const BLOCKS = [
     ]},
     pushB:{t:"Push B — Max Volume Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
       {x:"Incline Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest of program at this rep range",m:["chest","sh"]},
-      {x:"Flat DB Press",s:"4×10",r:"RPE 8",n:"High volume continues",m:["chest","tri"]},
       {x:"Arnold Press",s:"3×10",r:"RPE 8",n:"Full shoulder volume",m:["sh"]},
-      {x:"Close-Grip Bench Press",s:"4×8",r:"RPE 8",n:"Tricep-dominant strength + mass",m:["tri","chest"]},
+      {x:"Close-Grip Push-Ups (bench)",s:"4×12",r:"RPE 8",n:"Peak volume — elevate feet if bodyweight reps feel easy",m:["tri","chest"]},
       {x:"JM Press",s:"3×10",r:"RPE 8–9",n:"Volume increased from Block 2",m:["tri"]},
       {x:"Overhead Tricep Extension",s:"3×12",r:"RPE 8–9",n:"Long head — every push session",m:["tri"]},
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8–9",n:"Delt finisher — last set can touch failure",m:["sh"]},
@@ -320,7 +317,7 @@ const BLOCKS = [
       {x:"Leg Press",s:"3×12",r:"RPE 5–6",n:"Maintained secondary leg volume",m:["quad"]},
       {x:"Leg Curl (lying)",s:"3×12",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
       {x:"Romanian Deadlift",s:"3×10",r:"RPE 5–6",n:"Posterior chain health",m:["ham","glute"]},
-      {x:"Walking Lunges",s:"2×12 each",r:"RPE 5–6",n:"Functional leg volume",m:["quad","glute"]},
+      {x:"Single-Leg Leg Press",s:"2×12 each",r:"RPE 5–6",n:"Light unilateral work — straight after the bilateral sets, same machine",m:["quad","glute"]},
       {x:"Seated Calf Raises",s:"4×15",r:"RPE 6–7",n:"Calf volume — soleus emphasis from bent knee",m:["core"]},
     ],n:"Short and light. Total leg volume highest this block between this and Sunday — keep this one brief."},
     legDay:{t:"Legs — Peak Volume Quads & Hamstrings",c:"Warmed up from the run — a couple light squat warm-up sets",e:[
@@ -329,7 +326,7 @@ const BLOCKS = [
       {x:"Front Squat",s:"3×8",r:"RPE 7–8",n:"Maintained from Block 2",m:["quad"]},
       {x:"Leg Press",s:"3×12",r:"RPE 7–8",n:"Added for total quad volume",m:["quad","glute"]},
       {x:"Leg Curl (lying)",s:"3×12",r:"RPE 8",n:"Peak hamstring isolation",m:["ham"]},
-      {x:"Walking Lunges",s:"2×12 each",r:"RPE 7–8",n:"Functional leg volume",m:["quad","glute"]},
+      {x:"Single-Leg Leg Press",s:"2×12 each",r:"RPE 7–8",n:"Unilateral volume — continues from Block 2",m:["quad","glute"]},
       {x:"Leg Extension",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["quad"]},
       {x:"Standing Calf Raises",s:"4×15",r:"RPE 8",n:"Weighted, full ROM",m:["core"]},
     ],n:"Highest leg volume of the 12 weeks. Trim a set or two here before cutting upper work if run down."},
@@ -368,6 +365,24 @@ function setQueue(q){ localStorage.setItem(LS_QUEUE, JSON.stringify(q)); }
 
 const keyOf = (w, ex) => `w${w}__${ex}`;
 
+/* Exercises renamed in the program — rows logged under the old name are
+ * remapped to the new name at sync time so history stays visible. */
+const RENAMES = {
+  "Incline DB Press":"Chest Fly (machine or cable)",
+  "Cable Chest Fly":"Chest Fly (machine or cable)",
+  "Close-Grip Bench Press":"Close-Grip Push-Ups (bench)",
+  "Weighted Dips":"Assisted Dips (machine)",
+};
+
+/* Backfill for work done before it was tracked in the app.
+ * A real log for the same week+exercise always wins over these. */
+const SEED_LOGS = {
+  [keyOf(1,"Close-Grip Push-Ups (bench)")]:{week:1,weight:"3×6"},
+  [keyOf(2,"Close-Grip Push-Ups (bench)")]:{week:2,weight:"3×8"},
+  [keyOf(3,"Close-Grip Push-Ups (bench)")]:{week:3,weight:"3×8"},
+  [keyOf(4,"Close-Grip Push-Ups (bench)")]:{week:4,weight:"4×8"},
+};
+
 async function api(path, method, body){
   const cfg = getCfg();
   if(!cfg) throw new Error("not configured");
@@ -387,7 +402,12 @@ async function api(path, method, body){
 async function syncDown(){
   const data = await api("/logs", "GET");
   const cache = {};
-  (data.logs||[]).forEach(r => { cache[keyOf(r.week, r.exercise)] = {weight:r.weight, note:r.note, week:r.week}; });
+  (data.logs||[]).forEach(r => {
+    const renamed = RENAMES[r.exercise];
+    const k = keyOf(r.week, renamed || r.exercise);
+    if(renamed && cache[k]) return; // a row logged under the current name wins
+    cache[k] = {weight:r.weight, note:r.note, week:r.week};
+  });
   setCache(cache);
   return cache;
 }
@@ -424,8 +444,11 @@ function pill(k){ const [c,l] = MUSCLE[k]||["m-core",k]; return `<span class="pi
 
 function prevLogs(ex){
   const out=[];
-  const blockStart = Math.floor((state.week - 1) / 4) * 4 + 1;
-  for(let w=blockStart; w<state.week; w++){ const e=state.cache[keyOf(w,ex)]; if(e) out.push({week:w,...e}); }
+  const curBlock = weekToBlock(state.week);
+  for(let w=1; w<state.week; w++){
+    const e=state.cache[keyOf(w,ex)] || SEED_LOGS[keyOf(w,ex)];
+    if(e){ const b=weekToBlock(w); out.push({week:w, block:b, sameBlock:b===curBlock, ...e}); }
+  }
   return out;
 }
 
@@ -448,7 +471,7 @@ function rpeToRir(rpeStr){
 /* Suggest what to do this week for an exercise based on the block's
  * progressive-overload rule (Add 5–10 lb/wk or +1–2 reps) and the
  * exercise's RPE target. Looks at the most recent log this block. */
-function weekSuggestion(ex, hist){
+function weekSuggestion(ex, hist, prior){
   const rpe = ex.r || "the prescribed RPE";
   const rir = rpeToRir(ex.r);
   const tank = rir
@@ -456,6 +479,10 @@ function weekSuggestion(ex, hist){
     : "a couple reps in the tank";
   const weekInBlock = ((state.week - 1) % 4) + 1;
   if(!hist.length){
+    if(prior && prior.length){
+      const p = prior[prior.length - 1];
+      return `New block — sets/reps change, so set a fresh <b>baseline at ${esc(rpe)}</b> with ${tank}. For reference, ${BLOCKS[p.block].name} Wk ${p.week} you did <b>${unit(p.weight)}</b> (at that block's rep range).`;
+    }
     return `Week ${weekInBlock} of this block — set a <b>baseline at ${esc(rpe)}</b>. Pick a weight where you finish all reps with ${tank}.`;
   }
   const last = hist[hist.length - 1];
@@ -469,18 +496,22 @@ function weekSuggestion(ex, hist){
 
 function exerciseHTML(e, blk){
   const k = keyOf(state.week, e.x);
-  const entry = state.cache[k];
+  const entry = state.cache[k] || SEED_LOGS[k];
   const hist = prevLogs(e.x);
+  const prior = hist.filter(h=>!h.sameBlock);
+  const cur = hist.filter(h=>h.sameBlock);
   const editing = state.editing === k;
 
-  const histHTML = hist.length ? `<div class="hist"><div class="hist-t">Previous weeks in this block</div>${
-    hist.map((h,i)=>{
-      const last = i===hist.length-1;
-      return `<div class="hb"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${unit(h.weight)}</span>${last?'<span class="last">last</span>':'<span></span>'}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
-    }).join("")
-  }</div>` : "";
+  const hrow = (h, right) => `<div class="hb${h.sameBlock?"":" prev"}"><div class="hrow"><span class="w">Wk ${h.week}</span><span class="v">${unit(h.weight)}</span>${right}</div>${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}</div>`;
+  const priorHTML = prior.length ? `<div class="hist-t">Earlier blocks — different sets/reps</div>${
+    prior.map(h=>hrow(h, `<span class="blkb">${BLOCKS[h.block].name}</span>`)).join("")
+  }` : "";
+  const curHTML = cur.length ? `<div class="hist-t"${prior.length?' style="margin-top:9px"':""}>Previous weeks in this block</div>${
+    cur.map((h,i)=>hrow(h, i===cur.length-1?'<span class="last">last</span>':"<span></span>")).join("")
+  }` : "";
+  const histHTML = hist.length ? `<div class="hist">${priorHTML}${curHTML}</div>` : "";
 
-  const suggHTML = `<div class="sugg"><span class="sugg-l">💪 This week</span>${weekSuggestion(e, hist)}</div>`;
+  const suggHTML = `<div class="sugg"><span class="sugg-l">💪 This week</span>${weekSuggestion(e, cur, prior)}</div>`;
 
   let logHTML;
   if(!editing){
