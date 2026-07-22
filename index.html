@@ -169,10 +169,10 @@ const MUSCLE = {
 const BLOCKS = [
 {
   name:"Block 1", subtitle:"Accumulation", weeks:"Weeks 1–4", tag:"vol", tagLabel:"Volume Phase",
-  desc:"High volume hypertrophy — 4×10–12, moderate load (65–75% 1RM). Foundation of the bulk: max stimulus across chest, back, shoulders, arms. Legs secondary. Runs easy.",
+  desc:"High volume hypertrophy — 4×10–12, moderate load (65–75% 1RM). Foundation of the bulk: max stimulus across chest, back, shoulders, arms. Legs secondary. Sunday run easy.",
   po:"Add 5–10 lb per week on main lifts OR 1–2 reps per set. If all reps clean with 2 in the tank, load goes up next week. Eat in a surplus.",
   s:{
-    pushA:{t:"Push A — Chest, Shoulders & Triceps",c:"Warm-up: 5 min light cardio + band pull-aparts",e:[
+    pushA:{t:"Push A — Chest, Shoulders & Triceps",c:"5 min light cardio + band pull-aparts",e:[
       {x:"Flat Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Main chest mass builder. Add weight weekly.",m:["chest","tri"]},
       {x:"Chest Fly (machine or cable)",s:"4×12",r:"RPE 7",n:"Constant tension — deep stretch at the bottom, squeeze without slamming handles together",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×10",r:"RPE 6–7",n:"Full ROM overhead; control the negative",m:["sh","tri"]},
@@ -181,14 +181,14 @@ const BLOCKS = [
       {x:"Tricep Pushdowns (rope)",s:"3×15",r:"RPE 7–8",n:"Squeeze hard at bottom",m:["tri"]},
       {x:"Face Pulls (cable)",s:"3×15",r:"RPE 7",n:"Rear delt + shoulder health — every push session",m:["sh","back"]},
     ]},
-    pullA:{t:"Pull A — Back & Biceps",c:"Warm-up: 5 min row + scapular pull-ups",e:[
+    pullA:{t:"Pull A — Back & Biceps",c:"5 min row + scapular pull-ups",e:[
       {x:"Barbell Row (pronated)",s:"4×10",r:"RPE 6–7",n:"Primary back mass builder — heavy, controlled",m:["back"]},
       {x:"Assisted Pull-Ups (machine)",s:"4×8",r:"RPE 6–7",n:"Counterweighted machine — log the assistance weight. Progress by reducing it.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 7",n:"Mid-back thickness; pause at peak",m:["back"]},
       {x:"Barbell Curl",s:"4×12",r:"RPE 7–8",n:"Main bicep mass builder — strict",m:["bi"]},
       {x:"Hammer Curl",s:"3×12",r:"RPE 7–8",n:"Brachialis — arm thickness",m:["bi"]},
     ]},
-    pushB:{t:"Push B — Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio + band work",e:[
+    pushB:{t:"Push B — Chest, Shoulders & Triceps (Angles)",c:"5 min light cardio + band work",e:[
       {x:"Incline Barbell Bench Press",s:"4×10",r:"RPE 6–7",n:"Upper chest — different angle than Push A",m:["chest","sh"]},
       {x:"Arnold Press",s:"3×10",r:"RPE 6–7",n:"Rotation hits all 3 delt heads",m:["sh"]},
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 7–8",n:"Constant tension — different stimulus than DB",m:["sh"]},
@@ -196,20 +196,21 @@ const BLOCKS = [
       {x:"Overhead Tricep Extension (cable)",s:"3×12",r:"RPE 7–8",n:"Long head — biggest tricep mass driver",m:["tri"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
     ]},
-    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min rowing or bike",e:[
+    pullB:{t:"Pull B — Back & Biceps",c:"5 min rowing or bike",e:[
       {x:"Deadlift",s:"3×6",r:"RPE 6–7",n:"Total back + posterior chain — moderate, not max",m:["back","ham","glute"]},
       {x:"T-Bar Row",s:"4×10",r:"RPE 7",n:"Back thickness",m:["back"]},
       {x:"Single-Arm DB Row",s:"4×10 each",r:"RPE 7",n:"Unilateral back — full stretch",m:["back"]},
       {x:"Incline DB Curl",s:"3×12",r:"RPE 7–8",n:"Extra stretch on biceps — great for mass",m:["bi"]},
       {x:"Cable Curl",s:"3×12",r:"RPE 7–8",n:"Constant tension finisher",m:["bi"]},
     ]},
-    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Cardio health + light leg conditioning. Not performance-focused.",n:"Keep these easy. Don't burn into the surplus you need for growth. Walk part of it if run-down."},
-    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
-      {x:"Leg Press",s:"3×12",r:"RPE 5–6",n:"Secondary leg volume — moderate, not max",m:["quad"]},
-      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
-      {x:"Romanian Deadlift",s:"2×12",r:"RPE 5",n:"Light — hamstring health",m:["ham","glute"]},
+    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Cardio health + light leg conditioning. Not performance-focused.",n:"Keep it easy. Don't burn into the surplus you need for growth. Walk part of it if run-down."},
+    wedLegs:{t:"Legs — Moderate Volume",c:"5 min bike or incline walk + bodyweight squats and leg swings",e:[
+      {x:"Leg Press",s:"4×12",r:"RPE 6–7",n:"A real working session now — one more set, moderate load",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 6–7",n:"Hamstring volume — control the negative",m:["ham"]},
+      {x:"Romanian Deadlift",s:"3×12",r:"RPE 6",n:"Moderate — full hamstring stretch",m:["ham","glute"]},
+      {x:"Leg Extension",s:"2×15",r:"RPE 6–7",n:"Quad finisher — squeeze at the top",m:["quad"]},
       {x:"Seated Calf Raises",s:"4×15",r:"RPE 6–7",n:"Calf volume — soleus emphasis from bent knee",m:["core"]},
-    ],n:"Short and light — maintenance right after your easy run. Keep brief so it doesn't eat into recovery."},
+    ],n:"Ramped up now that the Wednesday run is gone — a real second leg session. Sunday stays the heavy one, so stop a few reps short of failure here."},
     legDay:{t:"Legs — Quads & Hamstrings",c:"Warmed up from the morning run — light dynamic stretching before loading",e:[
       {x:"Barbell Back Squat",s:"4×10",r:"RPE 6–7",n:"Main quad+ham driver. Beltless for bracing.",m:["quad","ham"]},
       {x:"Romanian Deadlift",s:"4×10",r:"RPE 6–7",n:"Slow negative — full hamstring stretch",m:["ham","glute"]},
@@ -217,7 +218,7 @@ const BLOCKS = [
       {x:"Leg Curl (lying)",s:"3×12",r:"RPE 7",n:"Pause at top, control negative",m:["ham"]},
       {x:"Leg Extension",s:"3×15",r:"RPE 7–8",n:"Isolation finisher — squeeze at top",m:["quad"]},
       {x:"Standing Calf Raises",s:"4×15",r:"RPE 7",n:"Full ROM, pause at stretch",m:["core"]},
-    ],n:"A few hours after your morning run — legs get a mostly fresh effort. Your one real dedicated leg session each week."},
+    ],n:"A few hours after your morning run — legs get a mostly fresh effort. Still the heavier of your two leg sessions."},
   }
 },
 {
@@ -225,7 +226,7 @@ const BLOCKS = [
   desc:"Lower reps (6–10), higher load (75–85% 1RM) on compounds; accessories stay high-volume. Mass and strength both climb. Legs secondary with added load.",
   po:"Add 5–10 lb per week on compounds. Accessories: add 1 rep before adding weight. If not recovering, you need more food/sleep — not less training.",
   s:{
-    pushA:{t:"Push A — Heavy Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets on bench",e:[
+    pushA:{t:"Push A — Heavy Chest, Shoulders & Triceps",c:"5 min cardio + 2 ramp sets on bench",e:[
       {x:"Flat Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"75–82% 1RM — heavier than Block 1",m:["chest","tri"]},
       {x:"Chest Fly (machine or cable)",s:"4×10",r:"RPE 7–8",n:"Heavier than Block 1 — keep the deep stretch",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×8",r:"RPE 7–8",n:"Heavier; controlled tempo",m:["sh","tri"]},
@@ -234,14 +235,14 @@ const BLOCKS = [
       {x:"Overhead Tricep Extension",s:"3×12",r:"RPE 8",n:"Long head volume — non-negotiable",m:["tri"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health every session",m:["sh","back"]},
     ]},
-    pullA:{t:"Pull A — Heavy Back & Biceps",c:"Warm-up: 5 min row + scap pulls",e:[
+    pullA:{t:"Pull A — Heavy Back & Biceps",c:"5 min row + scap pulls",e:[
       {x:"Barbell Row",s:"5×6",r:"RPE 7–8",n:"Heavier than Block 1 — primary driver",m:["back"]},
       {x:"Assisted Pull-Ups (machine)",s:"4×6",r:"RPE 7–8",n:"Step up from Block 1 — less assistance weight.",m:["back","bi"]},
       {x:"Pendlay Row",s:"2×8",r:"RPE 7–8",n:"Dead-stop, explosive — back power and thickness",m:["back"]},
       {x:"Barbell Curl",s:"4×10",r:"RPE 8",n:"Heavier than Block 1",m:["bi"]},
       {x:"Hammer Curl",s:"3×10",r:"RPE 8",n:"Arm thickness continues",m:["bi"]},
     ]},
-    pushB:{t:"Push B — Heavy Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
+    pushB:{t:"Push B — Heavy Chest, Shoulders & Triceps (Angles)",c:"5 min light cardio",e:[
       {x:"Incline Barbell Bench Press",s:"5×6",r:"RPE 7–8",n:"Heavier — upper chest strength",m:["chest","sh"]},
       {x:"Arnold Press",s:"3×8",r:"RPE 7–8",n:"Heavier than Block 1",m:["sh"]},
       {x:"Close-Grip Push-Ups (bench)",s:"4×10",r:"RPE 7–8",n:"You ended Block 1 at 4×8 — push reps up, or elevate feet to load it more",m:["tri","chest"]},
@@ -249,7 +250,7 @@ const BLOCKS = [
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8",n:"High rep for delt hypertrophy",m:["sh"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
     ]},
-    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min row",e:[
+    pullB:{t:"Pull B — Back & Biceps",c:"5 min row",e:[
       {x:"Deadlift",s:"4×5",r:"RPE 7–8",n:"Heavier than Block 1 — real strength driver",m:["back","ham","glute"]},
       {x:"T-Bar Row",s:"4×8",r:"RPE 7–8",n:"Heavier; back thickness",m:["back"]},
       {x:"Single-Arm DB Row",s:"3×8 each",r:"RPE 7–8",n:"Heavier than Block 1",m:["back"]},
@@ -257,12 +258,13 @@ const BLOCKS = [
       {x:"Cable Curl",s:"3×12",r:"RPE 8",n:"Finisher — keep pump high",m:["bi"]},
     ]},
     run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Cardio maintenance. Keep easy — lifting is heavier and needs recovery.",n:"If lifts stall, trim run intensity (don't skip) before cutting calories. Recovery capacity is finite."},
-    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
-      {x:"Leg Press",s:"3×10",r:"RPE 5–6",n:"Slightly heavier than Block 1",m:["quad"]},
-      {x:"Leg Curl (lying)",s:"3×10",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
-      {x:"Romanian Deadlift",s:"3×10",r:"RPE 5–6",n:"More volume than Block 1 — still secondary",m:["ham","glute"]},
+    wedLegs:{t:"Legs — Moderate Load",c:"5 min bike or incline walk + bodyweight squats and leg swings",e:[
+      {x:"Leg Press",s:"4×10",r:"RPE 6–7",n:"Heavier than Block 1 — one more set",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×10",r:"RPE 6–7",n:"Hamstring volume",m:["ham"]},
+      {x:"Romanian Deadlift",s:"3×10",r:"RPE 6–7",n:"Moderate load — keeps the hinge sharp for Sunday",m:["ham","glute"]},
+      {x:"Leg Extension",s:"2×15",r:"RPE 7",n:"Quad finisher",m:["quad"]},
       {x:"Seated Calf Raises",s:"4×15",r:"RPE 6–7",n:"Calf volume — soleus emphasis from bent knee",m:["core"]},
-    ],n:"Short and light — maintenance right after your run. Keep brief."},
+    ],n:"Ramped up with the run gone, but Sunday is still the heavy session — leave 3–4 reps in the tank here."},
     legDay:{t:"Legs — Heavier Quads & Hamstrings",c:"Warmed up from the run — a couple light squat warm-up sets before heavy",e:[
       {x:"Barbell Back Squat",s:"5×6",r:"RPE 7–8",n:"75–80% 1RM — heavier; belt allowed",m:["quad","ham"]},
       {x:"Romanian Deadlift",s:"4×8",r:"RPE 7–8",n:"Heavier; hamstring overload",m:["ham","glute"]},
@@ -279,7 +281,7 @@ const BLOCKS = [
   desc:"Total weekly volume at its highest — more sets across push and pull, intensity high on big compounds. This is where the bulk shows. Deload week 9 precedes it.",
   po:"Continue 5–10 lb/week on compounds while it holds. Stall 2 sessions? Hold the weight, add a rep, then push again.",
   s:{
-    pushA:{t:"Push A — Max Volume Chest, Shoulders & Triceps",c:"Warm-up: 5 min cardio + 2 ramp sets",e:[
+    pushA:{t:"Push A — Max Volume Chest, Shoulders & Triceps",c:"5 min cardio + 2 ramp sets",e:[
       {x:"Flat Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest at this rep range so far",m:["chest","tri"]},
       {x:"Chest Fly (machine or cable)",s:"4×15",r:"RPE 8–9",n:"Peak fly volume — extra set replaces the removed incline press",m:["chest"]},
       {x:"Seated DB Shoulder Press",s:"3×10",r:"RPE 8",n:"Volume high for delt growth",m:["sh","tri"]},
@@ -288,7 +290,7 @@ const BLOCKS = [
       {x:"Tricep Pushdowns",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["tri"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health — non-negotiable",m:["sh","back"]},
     ]},
-    pullA:{t:"Pull A — Max Volume Back & Biceps",c:"Warm-up: 5 min row",e:[
+    pullA:{t:"Pull A — Max Volume Back & Biceps",c:"5 min row",e:[
       {x:"Barbell Row",s:"5×8",r:"RPE 8",n:"High volume back mass",m:["back"]},
       {x:"Assisted Pull-Ups (machine)",s:"4×8",r:"RPE 8",n:"Higher volume — hold same assistance weight, push more clean reps.",m:["back","bi"]},
       {x:"Seated Cable Row",s:"3×12",r:"RPE 8",n:"Added set for total back volume",m:["back"]},
@@ -296,7 +298,7 @@ const BLOCKS = [
       {x:"Hammer Curl",s:"3×12",r:"RPE 8–9",n:"Arm thickness focus",m:["bi"]},
       {x:"Incline DB Curl",s:"3×12",r:"RPE 8–9",n:"Added for total bicep volume",m:["bi"]},
     ]},
-    pushB:{t:"Push B — Max Volume Chest, Shoulders & Triceps (Angles)",c:"Warm-up: 5 min light cardio",e:[
+    pushB:{t:"Push B — Max Volume Chest, Shoulders & Triceps (Angles)",c:"5 min light cardio",e:[
       {x:"Incline Barbell Bench Press",s:"5×8",r:"RPE 8",n:"Heaviest of program at this rep range",m:["chest","sh"]},
       {x:"Arnold Press",s:"3×10",r:"RPE 8",n:"Full shoulder volume",m:["sh"]},
       {x:"Close-Grip Push-Ups (bench)",s:"4×12",r:"RPE 8",n:"Peak volume — elevate feet if bodyweight reps feel easy",m:["tri","chest"]},
@@ -305,21 +307,21 @@ const BLOCKS = [
       {x:"Cable Lateral Raises",s:"3×15",r:"RPE 8–9",n:"Delt finisher — last set can touch failure",m:["sh"]},
       {x:"Face Pulls",s:"3×15",r:"RPE 7",n:"Shoulder health staple",m:["sh","back"]},
     ]},
-    pullB:{t:"Pull B — Back & Biceps",c:"Warm-up: 5 min row",e:[
+    pullB:{t:"Pull B — Back & Biceps",c:"5 min row",e:[
       {x:"Deadlift",s:"4×6",r:"RPE 8",n:"Heaviest deadlift volume of the program",m:["back","ham","glute"]},
       {x:"T-Bar Row",s:"4×10",r:"RPE 8",n:"High volume back thickness",m:["back"]},
       {x:"Single-Arm DB Row",s:"3×10 each",r:"RPE 8",n:"Continued unilateral volume",m:["back"]},
       {x:"Incline DB Curl",s:"3×12",r:"RPE 8–9",n:"Stretch-position bicep work",m:["bi"]},
       {x:"Cable Curl",s:"3×15",r:"RPE 8–9",n:"Finisher — last set can touch failure",m:["bi"]},
     ]},
-    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Maintain cardio base through the highest-volume block.",n:"Peak volume — if fried, drop one run to 2 miles or walk it. Don't sacrifice lifting recovery."},
-    wedLegs:{t:"Light Legs — After Run",c:"Already warmed up from the run — straight into light loading",e:[
-      {x:"Leg Press",s:"3×12",r:"RPE 5–6",n:"Maintained secondary leg volume",m:["quad"]},
-      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 5–6",n:"Hamstring maintenance",m:["ham"]},
-      {x:"Romanian Deadlift",s:"3×10",r:"RPE 5–6",n:"Posterior chain health",m:["ham","glute"]},
-      {x:"Single-Leg Leg Press",s:"2×12 each",r:"RPE 5–6",n:"Light unilateral work — straight after the bilateral sets, same machine",m:["quad","glute"]},
+    run:{t:"Easy/Moderate Run",dist:"3–4 miles",pace:"Conversational — Zone 2",purpose:"Maintain cardio base through the highest-volume block.",n:"Peak volume — if fried, drop it to 2 miles or walk it. Don't sacrifice lifting recovery."},
+    wedLegs:{t:"Legs — Secondary Volume",c:"5 min bike or incline walk + bodyweight squats and leg swings",e:[
+      {x:"Leg Press",s:"4×12",r:"RPE 6–7",n:"Peak-block volume — one more set than earlier blocks",m:["quad"]},
+      {x:"Leg Curl (lying)",s:"3×12",r:"RPE 6–7",n:"Hamstring volume",m:["ham"]},
+      {x:"Romanian Deadlift",s:"3×10",r:"RPE 6–7",n:"Posterior chain — moderate",m:["ham","glute"]},
+      {x:"Single-Leg Leg Press",s:"2×12 each",r:"RPE 6–7",n:"Unilateral work — straight after the bilateral sets, same machine",m:["quad","glute"]},
       {x:"Seated Calf Raises",s:"4×15",r:"RPE 6–7",n:"Calf volume — soleus emphasis from bent knee",m:["core"]},
-    ],n:"Short and light. Total leg volume highest this block between this and Sunday — keep this one brief."},
+    ],n:"Total weekly leg volume peaks this block between this and Sunday. If recovery slips, trim sets here first — Sunday stays intact."},
     legDay:{t:"Legs — Peak Volume Quads & Hamstrings",c:"Warmed up from the run — a couple light squat warm-up sets",e:[
       {x:"Barbell Back Squat",s:"5×8",r:"RPE 8",n:"Highest volume at this weight range",m:["quad","ham"]},
       {x:"Romanian Deadlift",s:"4×10",r:"RPE 8",n:"Peak hamstring volume",m:["ham","glute"]},
@@ -337,8 +339,7 @@ const BLOCKS = [
 const DAYS = [
   {k:"pushA", d:"Monday",      b:"b-push", l:"Push A"},
   {k:"pullA", d:"Tuesday",     b:"b-pull", l:"Pull A"},
-  {k:"run",   d:"Wednesday",   b:"b-run",  l:"Run"},
-  {k:"wedLegs",d:"Wed · after",b:"b-legs", l:"Legs"},
+  {k:"wedLegs",d:"Wednesday",  b:"b-legs", l:"Legs"},
   {k:"rest",  d:"Thursday",    b:"b-rest", l:"Rest"},
   {k:"pushB", d:"Friday",      b:"b-push", l:"Push B"},
   {k:"pullB", d:"Saturday",    b:"b-pull", l:"Pull B"},
@@ -580,7 +581,7 @@ function render(){
   root.innerHTML = `
     <div class="hdr">
       <h1>Lift + Run</h1>
-      <p>4 lifts · 2 runs · 2 leg days · Thu rest</p>
+      <p>4 lifts · 1 run · 2 leg days · Thu rest</p>
       <span class="sync ${state.sync}" data-resync="1"><span class="dot"></span>${syncLabels[state.sync]}</span>
     </div>
 
